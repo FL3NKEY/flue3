@@ -6,8 +6,8 @@
     "scripts": {
         "install": "lerna exec npm install",
         "build": "lerna run build",
-        "publish": "lerna publish --no-push --no-commit-hooks --no-git-tag-version",
-        "version": "lerna version --no-push --no-commit-hooks --no-git-tag-version"
+        "version": "lerna version --no-push --no-commit-hooks --no-git-tag-version",
+        "publish": "lerna exec npm publish"
     },
     "devDependencies": {
         "@types/node": "18.11.9",

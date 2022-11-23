@@ -61,7 +61,6 @@ export const createUniversalEntry = (
     options: CreateAppOptions,
     hook: AppHook,
 ) => {
-    console.log('!!!!!! createUniversalEntry');
     const appContext = createAppContext();
     const context = createFrameworkContext(appContext);
     const { deferred } = createAndImplementServerResponse(appContext);

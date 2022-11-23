@@ -6,8 +6,7 @@ import { WORKDIR, APP_PATH } from '../constants/constants.js';
 import { frameworkVitePlugin } from './frameworkVitePlugin.js';
 import progressPlugin from 'vite-plugin-progress';
 
-/*
-const BUILT_IN_MODULES = [
+const builtInModules = [
     'assert',
     'buffer',
     'child_process',
@@ -38,8 +37,7 @@ const BUILT_IN_MODULES = [
     'zlib',
 ];
 
-const NO_EXTERNALS_PATTERN = BUILT_IN_MODULES.map((name) => `!(${name})`).concat('**');
- */
+const ssrNoExternalPattern = builtInModules.map((name) => `!(${name})`).concat('**');
 
 export const createViteConfig = (config: Config, target: 'server' | 'client' = 'client'): InlineConfig => {
     const srcFullPath = path.join(WORKDIR, config.srcPath);
@@ -88,7 +86,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             }),
         ],
         ssr: {
-            noExternal: [/* todo */],
+            noExternal: [...ssrNoExternalPattern],
         },
         optimizeDeps: {
             exclude: [...(config.exclude || []), 'flue3'],
