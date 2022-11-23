@@ -1,0 +1,15 @@
+import { Config } from './../types/Config.js';
+
+export const defaultConfig: Config = {
+    appId: '__flue3',
+    entryFilename: './app',
+    srcPath: 'src',
+    outputPath: 'dist',
+    mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+    ssr: true,
+    exclude: [],
+    server: {
+        hostname: '0.0.0.0',
+        port: 3030,
+    },
+};

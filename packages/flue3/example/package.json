@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "dev": "flue3 dev",
+        "build": "flue3 build"
+    }
+}

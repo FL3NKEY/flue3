@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "strict": true,
+        "noImplicitAny": true,
+        "allowJs": true,
+        "noEmit": true,
+        "noUnusedLocals": true,
+        "types": [
+            "node"
+        ]
+    },
+}
