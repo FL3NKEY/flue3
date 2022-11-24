@@ -28,7 +28,7 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
             if (viteCommand === 'build') {
                 if (!fs.existsSync(pluginConfig.vHtmlPath)) {
                     isVHtml = true;
-                    await fsp.writeFile(pluginConfig.vHtmlPath, resolveHtmlTemplate(config.ssr!));
+                    await fsp.writeFile(pluginConfig.vHtmlPath, resolveHtmlTemplate(config));
                 }
             }
         },

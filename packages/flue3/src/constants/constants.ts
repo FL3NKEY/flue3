@@ -3,6 +3,10 @@ import url from 'url';
 
 export const DIRNAME = url.fileURLToPath(new URL('.', import.meta.url));
 export const WORKDIR = process.cwd();
-export const USER_CONFIG_FILENAME = 'flue3.config.js';
+export const USER_CONFIG_FILENAMES = [
+    'flue3.config.js',
+    'flue3.config.ts',
+    'flue3.config.mjs',
+];
 export const APP_PATH = path.join(DIRNAME, '../app');
 export const TEAMPLATES_PATH = path.join(DIRNAME, '../../templates');

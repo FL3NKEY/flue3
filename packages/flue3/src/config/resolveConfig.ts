@@ -5,9 +5,11 @@ import { mergeConfig } from './mergeConfig.js';
 
 let cachedConfig: Config;
 
-export const resolveConfig = (overwrites?: ConfigDraft): Config => {
+export const resolveConfig = async (overwrites?: ConfigDraft): Promise<Config> => {
+    const userConfig = await resolveUserConfig();
+
     if (!cachedConfig) {
-        cachedConfig = mergeConfig(defaultConfig, resolveUserConfig());
+        cachedConfig = mergeConfig(defaultConfig, userConfig);
     }
 
     return overwrites ? mergeConfig(cachedConfig, overwrites) : cachedConfig;

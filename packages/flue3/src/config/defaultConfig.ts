@@ -1,4 +1,4 @@
-import { Config } from './../types/Config.js';
+import { Config } from '../types/Config';
 
 export const defaultConfig: Config = {
     appId: '__flue3',
@@ -10,6 +10,6 @@ export const defaultConfig: Config = {
     exclude: [],
     server: {
         hostname: '0.0.0.0',
-        port: 3030,
+        port: 3000,
     },
 };

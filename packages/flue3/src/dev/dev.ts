@@ -11,7 +11,7 @@ import path from 'path';
 type CreateUniversalEntry = ReturnType<typeof createUniversalEntry>;
 
 export const dev = async (configOverwrites?: Config) => {
-    const config = resolveConfig(configOverwrites);
+    const config = await resolveConfig(configOverwrites);
     const viteConfig = createViteConfig(config);
     const vite = await createViteServer(viteConfig);
     const srcPublicPath = path.join(WORKDIR, config.srcPath, 'public');
@@ -20,7 +20,7 @@ export const dev = async (configOverwrites?: Config) => {
         return (ssrEntrypoint.default ?? ssrEntrypoint) as CreateUniversalEntry;
     };
     // eslint-disable-next-line no-return-await
-    const htmlTemplate = async (url: string) => await vite.transformIndexHtml(url, resolveHtmlTemplate(config.ssr!));
+    const htmlTemplate = async (url: string) => await vite.transformIndexHtml(url, resolveHtmlTemplate(config));
 
     await createServer({
         ssr: config.ssr,

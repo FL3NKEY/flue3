@@ -1,18 +1,13 @@
-import { resolveConfig } from '../config/resolveConfig.js';
 import { SSRRenderReturns } from '../types/SSRRenderReturns.js';
 
-export const htmlTemplateImplementAppId = (template: string, customAppId?: string) => {
-    const { appId } = resolveConfig();
-
-    return template.replace('#_FLUE3_APP_ID', String(customAppId ?? appId));
+export const htmlTemplateImplementAppId = (template: string, appId: string) => {
+    return template.replace('#_FLUE3_APP_ID', appId);
 };
 
-export const htmlTemplateImplementEntrypoint = (template: string, customEntryFilename?: string) => {
-    const { entryFilename } = resolveConfig();
-
+export const htmlTemplateImplementEntrypoint = (template: string, entryFilename: string) => {
     return template.replace(
         '</body>',
-        `<script src="${customEntryFilename ?? entryFilename}" type="module"></script></body>`,
+        `<script src="${entryFilename}" type="module"></script></body>`,
     );
 };
 
