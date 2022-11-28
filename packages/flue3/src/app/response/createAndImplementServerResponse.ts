@@ -25,12 +25,9 @@ export const createAndImplementServerResponse = (appContext: AppContext) => {
 
     const isRedirected = () => isRedirect(response.status);
 
-    // eslint-disable-next-line no-param-reassign
-    appContext.response = response;
-    // eslint-disable-next-line no-param-reassign
-    appContext.writeResponse = writeResponse;
-    // eslint-disable-next-line no-param-reassign
-    appContext.isRedirected = isRedirected;
+    appContext.inject('response', response);
+    appContext.inject('writeResponse', writeResponse);
+    appContext.inject('isRedirected', isRedirected);
 
     return {
         deferred,

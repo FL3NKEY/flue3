@@ -8,7 +8,8 @@ export const createAppContext = (): AppContext => {
         vueApp: {} as App,
         isClient: !import.meta.env.SSR,
         isServer: import.meta.env.SSR,
-        initialState: {},
+        state: {},
+        writeState: () => console.error('[flue3] writeState not defined yet'),
         inject: () => () => console.error('[flue3] inject is not defined yet'),
         writeResponse: () => console.error('[flue3] Do not call writeResponse in browser or is not defined yet'),
         isRedirected: () => false,
@@ -17,5 +18,15 @@ export const createAppContext = (): AppContext => {
         redirect: () => console.error('[flue3] redirect is not defined yet'),
         response: {},
         clientRedirect: clientExternalRedirect,
+        setCookie: () => console.error('[flue3] setCookie not defined yet'),
+        getCookie: () => {
+            console.error('[flue3] getCookie not defined yet');
+            return undefined;
+        },
+        hasCookie: () => {
+            console.error('[flue3] hasCookie not defined yet');
+            return false;
+        },
+        removeCookie: () => console.error('[flue3] removeCookie not defined yet'),
     };
 };

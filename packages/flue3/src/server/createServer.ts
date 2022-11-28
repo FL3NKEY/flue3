@@ -9,59 +9,78 @@ import { writeHead } from '../utils/writeHead.js';
 import { htmlTemplateImplementSSR } from '../htmlTemplate/htmlTemplateImplements.js';
 import serveStatic from 'serve-static';
 import { CreateServerOptions } from '../types/CreateServerOptions.js';
+import { createProxyHandler } from './createProxyHandler.js';
+import { implementFetchPolyfill } from './implementFetchPolyfill.js';
 
 export const createServer = async ({
     ssr,
-    mode,
     hostname,
     port,
     ssrEntrypoint,
+    ssrEntrypointLoader,
     htmlTemplate,
     proxies,
     middlewares,
     manifest,
     publicPath,
 }: CreateServerOptions) => {
+    implementFetchPolyfill({
+        hostname,
+        port,
+    });
+
     const app = createH3App();
 
     if (middlewares && middlewares.length) {
         middlewares.forEach((middleware) => app.use(fromNodeMiddleware(middleware)));
     }
 
-    console.log(proxies, mode);
-
     if (publicPath) {
         app.use(publicPath[0], fromNodeMiddleware(serveStatic(publicPath[1])));
     }
 
-    app.use('*', eventHandler(async ({ req, res }) => {
-        const url = req.url;
+    if (proxies) {
+        // eslint-disable-next-line guard-for-in,no-restricted-syntax
+        for (const key in proxies) {
+            const proxyOptions = proxies[key];
+            app.use(key, createProxyHandler(proxyOptions));
+        }
+    }
+
+    app.use('*', eventHandler(async (event) => {
         let template: string;
 
         if (typeof htmlTemplate === 'function') {
-            template = await htmlTemplate(url!);
+            template = await htmlTemplate(String(event.node.req.url));
         } else {
             template = htmlTemplate;
         }
 
         if (ssr) {
-            const currentSsrEntrypoint = await ssrEntrypoint(url!);
+            let currentSsrEntrypoint = ssrEntrypoint;
+
+            if (ssrEntrypointLoader) {
+                currentSsrEntrypoint = await ssrEntrypointLoader();
+            }
+
+            if (!currentSsrEntrypoint) {
+                writeHead(event.node.res, {
+                    status: 500,
+                    statusText: 'SSR Entrypoint not provided (expected ssrLoader or ssrEntrypointLoader)',
+                });
+                return event.node.res.end();
+            }
 
             const {
-                implementReq,
-                implementRes,
                 render,
                 context,
-            } = currentSsrEntrypoint;
+            } = currentSsrEntrypoint(event, manifest);
 
-            implementReq(req);
-            implementRes(res);
-
-            const renderedPartials = await render(url!, manifest);
+            const renderedPartials = await render();
+            writeHead(event.node.res, context.appContext.response);
 
             if (context.appContext.isRedirected()) {
-                writeHead(res, context.appContext.response);
-                return res.end();
+                return event.node.res.end();
             }
 
             /*

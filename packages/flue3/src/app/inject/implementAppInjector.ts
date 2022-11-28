@@ -3,6 +3,10 @@ import { AppInject } from '../../types/AppInject.js';
 
 export const implementAppInjector = (appContext: AppContext) => {
     const inject: AppInject = (key, value) => {
+        if (appContext.hasOwnProperty(key)) {
+            console.error(`[flue3] inject failed. "${key}" already exists in appContext`);
+            return;
+        }
         // eslint-disable-next-line no-param-reassign
         appContext[key] = value;
         // eslint-disable-next-line no-param-reassign

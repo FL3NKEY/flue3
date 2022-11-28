@@ -1,8 +1,11 @@
-import { Component, createApp as createVueApp } from 'vue';
+import {
+    Component,
+    createApp as createVueApp,
+    createSSRApp as createVueSSRApp,
+} from 'vue';
 import { CreateAppOptions } from '../types/CreateAppOptions.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
 import { createAppContext } from './context/createAppContext.js';
-import { implementClientInitialState } from './initialState/implementClientInitialState.js';
 import { AppHook } from '../types/AppHook.js';
 
 export const createUniversalEntry = async (
@@ -12,9 +15,8 @@ export const createUniversalEntry = async (
 ) => {
     const appContext = createAppContext();
     const context = createFrameworkContext(appContext);
-    implementClientInitialState(appContext);
 
-    appContext.vueApp = createVueApp(App);
+    appContext.vueApp = FLUE3_SSR_ENABLED ? createVueSSRApp(App) : createVueApp(App);
 
     await hook(context);
 
@@ -22,7 +24,7 @@ export const createUniversalEntry = async (
         await options.entryClient(appContext);
     }
 
-    appContext.vueApp.mount(`#${FLUE3_APP_ID}`, FLUE3_SSR_ENABLED);
+    appContext.vueApp.mount(`#${FLUE3_APP_ID}`);
 
     return {
         context,
@@ -30,5 +32,5 @@ export const createUniversalEntry = async (
 };
 
 /* for TypeScript */
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export default (() => {}) as () => ReturnType<typeof createUniversalEntry>;
+// eslint-disable-next-line
+export default {} as ReturnType<typeof createUniversalEntry>;

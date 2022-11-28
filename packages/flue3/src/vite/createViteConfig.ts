@@ -68,7 +68,10 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                 },
             },
             copyPublicDir: false,
-            assetsDir: 'public/assets',
+            assetsDir: target === 'server' ? 'chunks' : 'public/assets',
+            commonjsOptions: {
+                transformMixedEsModules: true,
+            },
         },
         plugins: [
             frameworkVitePlugin(config, {

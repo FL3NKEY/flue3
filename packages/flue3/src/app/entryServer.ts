@@ -5,11 +5,11 @@ import { SSRTemplatePartials } from '../types/SSRTemplatePartials.js';
 import { createAppContext } from './context/createAppContext.js';
 import { createAndImplementServerResponse } from './response/createAndImplementServerResponse.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
-import { NodeServerResponse, NodeIncomingMessage } from 'h3';
 import { SSRRenderReturns } from '../types/SSRRenderReturns.js';
 import { AppHook } from '../types/AppHook.js';
 import { SSRManifest } from '../types/SSRManifest.js';
 import path from 'path';
+import { H3Event } from 'h3';
 
 export const renderPreloadLink = (file: string) => {
     if (file.endsWith('.js')) {
@@ -61,72 +61,67 @@ export const createUniversalEntry = (
     options: CreateAppOptions,
     hook: AppHook,
 ) => {
-    const appContext = createAppContext();
-    const context = createFrameworkContext(appContext);
-    const { deferred } = createAndImplementServerResponse(appContext);
+    return (serverEvent: H3Event, manifest?: SSRManifest) => {
+        const appContext = createAppContext();
+        const context = createFrameworkContext(appContext);
+        const { deferred } = createAndImplementServerResponse(appContext);
 
-    const implementReq = (req: NodeIncomingMessage) => {
-        appContext.req = req;
-    };
+        appContext.req = serverEvent.node.req;
+        appContext.res = serverEvent.node.res;
 
-    const implementRes = (res: NodeServerResponse) => {
-        appContext.res = res;
-    };
+        const render = async (): Promise<SSRRenderReturns | undefined> => {
+            const renderPartials: SSRTemplatePartials = {
+                htmlAttrs: '',
+                bodyAttrs: '',
+                headTags: '',
+                body: '',
+                teleports: {},
+            };
 
-    const render = async (url: string, manifest?: SSRManifest): Promise<SSRRenderReturns | undefined> => {
-        const renderPartials: SSRTemplatePartials = {
-            htmlAttrs: '',
-            bodyAttrs: '',
-            headTags: '',
-            body: '',
-            teleports: {},
-        };
+            appContext.vueApp = createVueApp(App);
 
-        appContext.vueApp = createVueApp(App);
+            let hookReturns = {} as Awaited<ReturnType<typeof hook>>;
+            const proceedHook = async () => {
+                hookReturns = await hook(context);
+            };
 
-        let hookReturns = {} as Awaited<ReturnType<typeof hook>>;
-        const proceedHook = async () => {
-            hookReturns = await hook(context);
-        };
-
-        await Promise.race([proceedHook(), deferred.promise]);
-        if (appContext.isRedirected()) return undefined;
-
-        if (options.entryServer) {
-            await options.entryServer(appContext);
+            await Promise.race([proceedHook(), deferred.promise]);
             if (appContext.isRedirected()) return undefined;
-        }
 
-        await hookReturns.runPluginsHook('beforeRender', renderPartials);
+            if (options.entryServer) {
+                await options.entryServer(appContext);
+                if (appContext.isRedirected()) return undefined;
+            }
 
-        renderPartials.body += await renderToString(appContext.vueApp, context);
-        if (appContext.isRedirected()) return undefined;
+            await hookReturns.runPluginsHook('beforeRender', renderPartials);
 
-        if (manifest) {
-            renderPartials.headTags += renderPreloadLinks(context.modules, manifest);
-        }
+            renderPartials.body += await renderToString(appContext.vueApp, context.ssrContext);
+            if (appContext.isRedirected()) return undefined;
 
-        renderPartials.teleports = {
-            ...context.teleports,
-            ...renderPartials.teleports,
+            if (manifest) {
+                renderPartials.headTags += renderPreloadLinks(context.ssrContext.modules, manifest);
+            }
+
+            renderPartials.teleports = {
+                ...context.ssrContext.teleports,
+                ...renderPartials.teleports,
+            };
+
+            await hookReturns.runPluginsHook('afterRender', renderPartials);
+
+            return {
+                ...renderPartials,
+                initialState: appContext.state,
+            };
         };
-
-        await hookReturns.runPluginsHook('afterRender', renderPartials);
 
         return {
-            ...renderPartials,
-            initialState: appContext.initialState,
+            context,
+            render,
         };
-    };
-
-    return {
-        context,
-        implementReq,
-        implementRes,
-        render,
     };
 };
 
 /* for TypeScript */
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export default (() => {}) as () => ReturnType<typeof createUniversalEntry>;
+// eslint-disable-next-line
+export default ((serverEvent, manifest?) => {}) as ReturnType<typeof createUniversalEntry>;

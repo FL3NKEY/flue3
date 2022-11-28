@@ -4,7 +4,9 @@ import { FrameworkContext } from '../../types/FrameworkContext.js';
 export const createFrameworkContext = (appContext: AppContext): FrameworkContext => {
     return {
         appContext,
-        teleports: {},
-        modules: new Set(),
+        ssrContext: {
+            teleports: {},
+            modules: new Set(),
+        },
     };
 };

@@ -31,10 +31,8 @@ export const implementAppError = (appContext: AppContext) => {
         errorState.captured = false;
     };
 
-    // eslint-disable-next-line no-param-reassign
-    appContext.error = error;
-    // eslint-disable-next-line no-param-reassign
-    appContext.errorState = errorState;
+    appContext.inject('error', error);
+    appContext.inject('errorState', errorState);
 
     return {
         error,

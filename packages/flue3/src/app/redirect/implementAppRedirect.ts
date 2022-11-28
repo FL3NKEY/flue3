@@ -15,8 +15,7 @@ export const implementAppRedirect = (appContext: AppContext) => {
         }
     };
 
-    // eslint-disable-next-line no-param-reassign
-    appContext.redirect = redirect;
+    appContext.inject('redirect', redirect);
 
     return redirect;
 };

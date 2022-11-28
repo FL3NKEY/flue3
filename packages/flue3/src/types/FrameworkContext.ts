@@ -3,6 +3,8 @@ import { SSRTemplatePartials } from './SSRTemplatePartials.js';
 
 export interface FrameworkContext {
     appContext: AppContext;
-    teleports?: SSRTemplatePartials['teleports'];
-    modules: Set<string>;
+    ssrContext: {
+        teleports?: SSRTemplatePartials['teleports'];
+        modules: Set<string>;
+    };
 }

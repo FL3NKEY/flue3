@@ -18,7 +18,7 @@ export const createHeadPlugin = definePlugin(({ appContext, onAfterRender }, ini
                 const renderPartialsKey = partialName as keyof Omit<typeof renderPartials, 'teleports'>;
                 const renderedHeadKey = partialName as keyof Awaited<ReturnType<typeof renderHeadToString>>;
                 // eslint-disable-next-line no-param-reassign
-                renderPartials[renderPartialsKey] = renderedHead[renderedHeadKey];
+                renderPartials[renderPartialsKey] += renderedHead[renderedHeadKey];
             });
         } catch (err) {
             console.error(err);

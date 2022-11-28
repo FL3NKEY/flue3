@@ -11,5 +11,6 @@ export const defaultConfig: Config = {
     server: {
         hostname: '0.0.0.0',
         port: 3000,
+        proxies: {},
     },
 };

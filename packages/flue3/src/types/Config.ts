@@ -1,4 +1,5 @@
 import { DeepPartial } from './DeepPartial.js';
+import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
 
 export interface Config {
     appId: string;
@@ -11,6 +12,7 @@ export interface Config {
     server: {
         hostname: string;
         port: number;
+        proxies: Record<string, HTTPProxyOptions | string>;
     };
 }
 

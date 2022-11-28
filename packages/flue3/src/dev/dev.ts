@@ -15,7 +15,7 @@ export const dev = async (configOverwrites?: Config) => {
     const viteConfig = createViteConfig(config);
     const vite = await createViteServer(viteConfig);
     const srcPublicPath = path.join(WORKDIR, config.srcPath, 'public');
-    const ssrEntrypoint = async () => {
+    const ssrEntrypointLoader = async () => {
         const ssrEntrypoint = await vite.ssrLoadModule(String(config.entryFilename));
         return (ssrEntrypoint.default ?? ssrEntrypoint) as CreateUniversalEntry;
     };
@@ -27,9 +27,10 @@ export const dev = async (configOverwrites?: Config) => {
         mode: 'development',
         hostname: config.server.hostname,
         port: config.server.port,
-        ssrEntrypoint,
+        ssrEntrypointLoader,
         htmlTemplate,
         middlewares: [vite.middlewares],
         publicPath: ['/public', srcPublicPath],
+        proxies: config.server.proxies,
     });
 };
