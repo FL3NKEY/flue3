@@ -22,6 +22,7 @@ export const createApp = (
         provideAppContext(context.appContext.vueApp, context.appContext);
         implementAppError(context.appContext);
         implementAppRedirect(context.appContext);
+
         const { runPluginsHook } = await createPlugins(options?.plugins, context.appContext);
 
         if (universalEntry) {

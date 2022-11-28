@@ -92,7 +92,11 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             noExternal: [...ssrNoExternalPattern],
         },
         optimizeDeps: {
-            exclude: [...(config.exclude || []), 'flue3'],
+            exclude: [
+                ...(config.exclude || []),
+                'flue3',
+                '@flue3/router',
+            ],
         },
         resolve: {
             alias: {
