@@ -9,9 +9,10 @@ export const createPlugins = async (plugins: CreateAppOptions['plugins'], appCon
     const pluginContext: AppPluginContext = {
         appContext,
         inject: appContext.inject,
-        afterHook: (hook) => pluginsHooks.afterHook.push(hook),
+        onAfterHook: (hook) => pluginsHooks.afterHook.push(hook),
         onBeforeRender: (hook) => pluginsHooks.beforeRender.push(hook),
         onAfterRender: (hook) => pluginsHooks.afterRender.push(hook),
+        onAfterEntry: (hook) => pluginsHooks.afterEntry.push(hook),
     };
 
     if (plugins && plugins.length > 0) {

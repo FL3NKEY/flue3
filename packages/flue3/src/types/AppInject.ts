@@ -1,1 +1,1 @@
-export type AppInject = <T>(key: string, value: T) => void;
+export type AppInject = <T>(key: string, value: T, override?: boolean) => void;

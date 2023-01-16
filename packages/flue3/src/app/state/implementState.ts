@@ -1,11 +1,15 @@
 import { AppContext } from '../../types/AppContext.js';
 
 export const implementState = (appContext: AppContext) => {
-    // eslint-disable-next-line no-param-reassign
-    appContext.inject('writeState', (propName: string, data: any) => {
+    appContext.inject('writeState', (key: string, data: any) => {
         // eslint-disable-next-line no-param-reassign
-        appContext.state[propName] = data;
-    });
+        appContext.state[key] = data;
+    }, true);
+
+    appContext.inject('deleteState', (key: string) => {
+        // eslint-disable-next-line no-param-reassign
+        delete appContext.state[key];
+    }, true);
 
     if (FLUE3_SSR_ENABLED && appContext.isClient) {
         // eslint-disable-next-line no-underscore-dangle,no-param-reassign

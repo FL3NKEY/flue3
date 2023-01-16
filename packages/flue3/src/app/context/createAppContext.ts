@@ -10,10 +10,15 @@ export const createAppContext = (): AppContext => {
         isServer: import.meta.env.SSR,
         state: {},
         writeState: () => console.error('[flue3] writeState not defined yet'),
+        deleteState: () => {
+            console.error('[flue3] deleteState not defined yet');
+            return false;
+        },
         inject: () => () => console.error('[flue3] inject is not defined yet'),
         writeResponse: () => console.error('[flue3] Do not call writeResponse in browser or is not defined yet'),
         isRedirected: () => false,
         error: () => () => console.error('[flue3] error is not defined yet'),
+        clearError: () => () => console.error('[flue3] clearError is not defined yet'),
         errorState: {} as AppErrorState,
         redirect: () => console.error('[flue3] redirect is not defined yet'),
         response: {},

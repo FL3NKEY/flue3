@@ -1,12 +1,10 @@
-import { AppContext } from '../../types/AppContext.js';
 import { FrameworkContext } from '../../types/FrameworkContext.js';
+import { AppContext } from '../../types/AppContext.js';
+import { SSRContext } from '../../types/SSRContext.js';
 
-export const createFrameworkContext = (appContext: AppContext): FrameworkContext => {
+export const createFrameworkContext = (): FrameworkContext => {
     return {
-        appContext,
-        ssrContext: {
-            teleports: {},
-            modules: new Set(),
-        },
+        appContext: {} as AppContext,
+        ssrContext: {} as SSRContext,
     };
 };

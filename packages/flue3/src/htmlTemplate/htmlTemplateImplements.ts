@@ -1,7 +1,7 @@
 import { SSRRenderReturns } from '../types/SSRRenderReturns.js';
 
 export const htmlTemplateImplementAppId = (template: string, appId: string) => {
-    return template.replace('#_FLUE3_APP_ID', appId);
+    return template.replace(/#_FLUE3_APP_ID/g, appId);
 };
 
 export const htmlTemplateImplementEntrypoint = (template: string, entryFilename: string) => {
@@ -57,6 +57,10 @@ export const htmlTemplateImplementInitialState = (template: string, initialState
         '</body>',
         `<script>window._FLUE3_INITIAL_STATE=${JSON.stringify(initialState)}</script></body>`,
     );
+};
+
+export const htmlImplementSPALoading = (template: string, loadingSource: string) => {
+    return template.replace('<!--#_FLUE3_SPA_LOADING-->', loadingSource);
 };
 
 export const htmlTemplateImplementSSR = (source: string, {

@@ -1,18 +1,11 @@
 import { computed } from 'vue';
-import { useAppContext } from 'flue3';
+import { useRoute } from 'vue-router';
 
 export const useLayout = () => {
-    const {
-        resolvedLayouts, layouts, route,
-    } = useAppContext();
-    const layoutName = computed(() => String(route.meta.routerLayoutName) ?? 'default');
-    const layoutComponent = computed(() => {
-        return resolvedLayouts[layoutName.value];
-    });
+    const route = useRoute();
+    const layoutName = computed<string | boolean>(() => route.meta.layout as string | boolean ?? 'default');
 
     return {
-        layouts,
         layoutName,
-        layoutComponent,
     };
 };

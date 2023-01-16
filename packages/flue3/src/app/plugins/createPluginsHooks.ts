@@ -5,6 +5,7 @@ export const createPluginsHooks = () => {
         afterHook: [],
         beforeRender: [],
         afterRender: [],
+        afterEntry: [],
     };
 
     const runPluginsHook: AppRunPluginsHook = async (hookName, passedData) => {
@@ -16,12 +17,10 @@ export const createPluginsHooks = () => {
 
         // eslint-disable-next-line guard-for-in,no-restricted-syntax
         for (const pluginHook of currentPluginsHooks) {
-            if (pluginHook instanceof Function) {
-                try {
-                    await pluginHook(passedData);
-                } catch (err) {
-                    console.error(`[flue3] plugin hook ${hookName} throw error`, err);
-                }
+            try {
+                await pluginHook(passedData);
+            } catch (err) {
+                console.error(`[flue3] plugin hook ${hookName} throw error`, err);
             }
         }
     };

@@ -42,6 +42,8 @@ const ssrNoExternalPattern = builtInModules.map((name) => `!(${name})`).concat('
 export const createViteConfig = (config: Config, target: 'server' | 'client' = 'client'): InlineConfig => {
     const srcFullPath = path.join(WORKDIR, config.srcPath);
     const appEntryFullPath = path.join(srcFullPath, config.entryFilename);
+    const appEntryClientFullPath = path.join(srcFullPath, config.entryClientFilename);
+    const appEntryServerFullPath = path.join(srcFullPath, config.entryServerFilename);
     let outDirFullPath = path.join(WORKDIR, config.outputPath);
     const vHtmlPath = path.join(srcFullPath, 'index.html');
     const serverEntryFullPath = path.join(APP_PATH, 'server.js');
@@ -78,6 +80,8 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                 target,
                 srcFullPath,
                 appEntryFullPath,
+                appEntryClientFullPath,
+                appEntryServerFullPath,
                 vHtmlPath,
                 srcPublicFullPath,
                 outPublicFullPath,

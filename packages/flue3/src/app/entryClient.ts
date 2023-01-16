@@ -7,24 +7,34 @@ import { CreateAppOptions } from '../types/CreateAppOptions.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
 import { createAppContext } from './context/createAppContext.js';
 import { AppHook } from '../types/AppHook.js';
+import { implementAppInjector } from './inject/implementAppInjector.js';
+import entryClient from '#_FLUE3_APP_TARGET_ENTRY';
+import { createDevtools } from './devtools/createDevtools.js';
+import { removeCssHotReloaded } from '../utils/css.js';
 
 export const createUniversalEntry = async (
     App: Component,
     options: CreateAppOptions,
     hook: AppHook,
 ) => {
-    const appContext = createAppContext();
-    const context = createFrameworkContext(appContext);
+    const context = createFrameworkContext();
+    context.appContext = createAppContext();
 
-    appContext.vueApp = FLUE3_SSR_ENABLED ? createVueSSRApp(App) : createVueApp(App);
+    context.appContext.vueApp = FLUE3_SSR_ENABLED ? createVueSSRApp(App) : createVueApp(App);
 
-    await hook(context);
+    implementAppInjector(context.appContext);
 
-    if (options.entryClient) {
-        await options.entryClient(appContext);
+    const hookReturns = await hook(context);
+    await hookReturns.runPluginsHook('afterHook');
+
+    await entryClient(context.appContext);
+
+    if (import.meta.env.DEV) {
+        createDevtools(context);
+        removeCssHotReloaded();
     }
 
-    appContext.vueApp.mount(`#${FLUE3_APP_ID}`);
+    context.appContext.vueApp.mount(`#${FLUE3_APP_ID}`);
 
     return {
         context,

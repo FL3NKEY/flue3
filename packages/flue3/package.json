@@ -1,6 +1,6 @@
 {
     "name": "flue3",
-    "version": "0.0.5-dev.0",
+    "version": "0.0.13-dev.0",
     "description": "flue3 SSR framework based on Vite",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -9,7 +9,7 @@
     "type": "module",
     "scripts": {
         "dev": "tsc-watch -p tsconfig.json",
-        "build": "tsc -p tsconfig.json"
+        "build": "rimraf lib && tsc -p tsconfig.json"
     },
     "bin": {
         "flue3": "./bin/flue3.js"
@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "3.2.0",
+        "@vue/devtools-api": "6.4.5",
         "copyfiles": "2.4.1",
         "deepmerge": "4.2.2",
         "esbuild": "0.15.15",
@@ -41,7 +42,7 @@
     },
     "devDependencies": {
         "@types/copyfiles": "2.4.1",
-        "@types/http-proxy": "^1.17.9",
+        "@types/http-proxy": "1.17.9",
         "@types/serve-static": "1.15.0"
     },
     "engines": {

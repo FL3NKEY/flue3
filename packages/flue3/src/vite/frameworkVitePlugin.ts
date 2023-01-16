@@ -11,12 +11,17 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
     target: 'server' | 'client';
     srcFullPath: string;
     appEntryFullPath: string;
+    appEntryClientFullPath: string;
+    appEntryServerFullPath: string;
     vHtmlPath: string;
     srcPublicFullPath: string;
     outPublicFullPath: string;
 }): Plugin => {
     const vRuntimeConfig = 'virtual:flue3RuntimeConfig';
+    const vFallbackFn = 'virtual:flue3FnFallback';
     const resolvedVRuntimeConfig = '\0' + vRuntimeConfig;
+    const resolvedVFallbackFn = '\0' + vFallbackFn;
+
     let viteCommand: 'build' | 'serve' = 'build';
     let isVHtml = false;
 
@@ -34,8 +39,14 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
         },
         // eslint-disable-next-line consistent-return
         async resolveId(id, importer, resolveOptions) {
+            const resolveAppTargetEntrypointPath = (ssr = false) => {
+                const entryFilePath = ssr ? pluginConfig.appEntryServerFullPath : pluginConfig.appEntryClientFullPath;
+                return entryFilePath;
+            };
+
             const aliasResolves: Record<string, string> = {
                 '#_FLUE3_UNIVERSAL_ENTRY': resolveUniversalEntrypointPath(resolveOptions.ssr),
+                '#_FLUE3_APP_TARGET_ENTRY': resolveAppTargetEntrypointPath(resolveOptions.ssr),
                 '#_FLUE3_APP_SSR_ENTRY': pluginConfig.appEntryFullPath,
             };
 
@@ -52,6 +63,10 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                     if (resolved) {
                         return resolved;
                     }
+
+                    if (['#_FLUE3_APP_TARGET_ENTRY'].includes(key)) {
+                        return resolvedVFallbackFn;
+                    }
                 }
             }
 
@@ -67,6 +82,10 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                 };
 
                 return `export const runtimeConfig = ${JSON.stringify(runtimeConfig)}`;
+            } if (id === resolvedVFallbackFn) {
+                if (!fs.existsSync(id)) {
+                    return 'export default () => {}';
+                }
             }
         },
         async writeBundle() {

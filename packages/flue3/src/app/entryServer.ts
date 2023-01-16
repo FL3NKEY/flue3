@@ -3,58 +3,16 @@ import { renderToString } from 'vue/server-renderer';
 import { CreateAppOptions } from '../types/CreateAppOptions.js';
 import { SSRTemplatePartials } from '../types/SSRTemplatePartials.js';
 import { createAppContext } from './context/createAppContext.js';
+import { createSSRContext } from './context/createSSRContext.js';
 import { createAndImplementServerResponse } from './response/createAndImplementServerResponse.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
 import { SSRRenderReturns } from '../types/SSRRenderReturns.js';
 import { AppHook } from '../types/AppHook.js';
 import { SSRManifest } from '../types/SSRManifest.js';
-import path from 'path';
 import { H3Event } from 'h3';
-
-export const renderPreloadLink = (file: string) => {
-    if (file.endsWith('.js')) {
-        return `<link rel="modulepreload" crossorigin href="${file}">`;
-    } if (file.endsWith('.css')) {
-        return `<link rel="stylesheet" href="${file}">`;
-    } if (file.endsWith('.woff')) {
-        return ` <link rel="preload" href="${file}" as="font" type="font/woff" crossorigin>`;
-    } if (file.endsWith('.woff2')) {
-        return ` <link rel="preload" href="${file}" as="font" type="font/woff2" crossorigin>`;
-    } if (file.endsWith('.gif')) {
-        return ` <link rel="preload" href="${file}" as="image" type="image/gif">`;
-    } if (file.endsWith('.jpg') || file.endsWith('.jpeg')) {
-        return ` <link rel="preload" href="${file}" as="image" type="image/jpeg">`;
-    } if (file.endsWith('.png')) {
-        return ` <link rel="preload" href="${file}" as="image" type="image/png">`;
-    }
-
-    return '';
-};
-
-const renderPreloadLinks = (modules: Set<string>, manifest: SSRManifest) => {
-    let links = '';
-    const seen = new Set<string>();
-    modules.forEach((id) => {
-        const files = manifest[id];
-        if (files) {
-            files.forEach((file) => {
-                if (!seen.has(file)) {
-                    seen.add(file);
-                    const filename = path.basename(file);
-                    if (manifest[filename]) {
-                        // eslint-disable-next-line no-restricted-syntax
-                        for (const depFile of manifest[filename]) {
-                            links += renderPreloadLink(depFile);
-                            seen.add(depFile);
-                        }
-                    }
-                    links += renderPreloadLink(file);
-                }
-            });
-        }
-    });
-    return links;
-};
+import { implementAppInjector } from './inject/implementAppInjector.js';
+import { renderPreloadLinks } from '../utils/preloadLinks.js';
+import entryServer from '#_FLUE3_APP_TARGET_ENTRY';
 
 export const createUniversalEntry = (
     App: Component,
@@ -62,14 +20,15 @@ export const createUniversalEntry = (
     hook: AppHook,
 ) => {
     return (serverEvent: H3Event, manifest?: SSRManifest) => {
-        const appContext = createAppContext();
-        const context = createFrameworkContext(appContext);
-        const { deferred } = createAndImplementServerResponse(appContext);
+        const context = createFrameworkContext();
 
-        appContext.req = serverEvent.node.req;
-        appContext.res = serverEvent.node.res;
+        const render = async (beforeRender?: () => void): Promise<SSRRenderReturns | undefined> => {
+            context.appContext = createAppContext();
+            context.ssrContext = createSSRContext();
 
-        const render = async (): Promise<SSRRenderReturns | undefined> => {
+            context.appContext.req = serverEvent.node.req;
+            context.appContext.res = serverEvent.node.res;
+
             const renderPartials: SSRTemplatePartials = {
                 htmlAttrs: '',
                 bodyAttrs: '',
@@ -78,25 +37,30 @@ export const createUniversalEntry = (
                 teleports: {},
             };
 
-            appContext.vueApp = createVueApp(App);
-
             let hookReturns = {} as Awaited<ReturnType<typeof hook>>;
             const proceedHook = async () => {
                 hookReturns = await hook(context);
             };
 
-            await Promise.race([proceedHook(), deferred.promise]);
-            if (appContext.isRedirected()) return undefined;
+            context.appContext.vueApp = createVueApp(App);
 
-            if (options.entryServer) {
-                await options.entryServer(appContext);
-                if (appContext.isRedirected()) return undefined;
-            }
+            implementAppInjector(context.appContext);
+            const { redirectDefer } = createAndImplementServerResponse(context.appContext);
+
+            await Promise.race([proceedHook(), redirectDefer.promise]);
+            await hookReturns.runPluginsHook('afterHook');
+            if (context.appContext.isRedirected()) return undefined;
+
+            await entryServer(context.appContext);
+            if (context.appContext.isRedirected()) return undefined;
 
             await hookReturns.runPluginsHook('beforeRender', renderPartials);
+            if (beforeRender) {
+                beforeRender();
+            }
 
-            renderPartials.body += await renderToString(appContext.vueApp, context.ssrContext);
-            if (appContext.isRedirected()) return undefined;
+            renderPartials.body += await renderToString(context.appContext.vueApp, context.ssrContext);
+            if (context.appContext.isRedirected()) return undefined;
 
             if (manifest) {
                 renderPartials.headTags += renderPreloadLinks(context.ssrContext.modules, manifest);
@@ -108,16 +72,25 @@ export const createUniversalEntry = (
             };
 
             await hookReturns.runPluginsHook('afterRender', renderPartials);
+            if (context.appContext.isRedirected()) return undefined;
 
             return {
                 ...renderPartials,
-                initialState: appContext.state,
+                initialState: context.appContext.state,
             };
+        };
+
+        const renderError = async (err: any) => {
+            // eslint-disable-next-line no-return-await
+            return await render(() => {
+                context.appContext.error(err);
+            });
         };
 
         return {
             context,
             render,
+            renderError,
         };
     };
 };

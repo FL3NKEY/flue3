@@ -11,8 +11,10 @@ import serveStatic from 'serve-static';
 import { CreateServerOptions } from '../types/CreateServerOptions.js';
 import { createProxyHandler } from './createProxyHandler.js';
 import { implementFetchPolyfill } from './implementFetchPolyfill.js';
+import { collectCssTagsFromModules } from '../utils/css.js';
 
 export const createServer = async ({
+    mode,
     ssr,
     hostname,
     port,
@@ -23,6 +25,8 @@ export const createServer = async ({
     middlewares,
     manifest,
     publicPath,
+    vite,
+    entrypointFilePath,
 }: CreateServerOptions) => {
     implementFetchPolyfill({
         hostname,
@@ -61,9 +65,7 @@ export const createServer = async ({
 
             if (ssrEntrypointLoader) {
                 currentSsrEntrypoint = await ssrEntrypointLoader();
-            }
-
-            if (!currentSsrEntrypoint) {
+            } else {
                 writeHead(event.node.res, {
                     status: 500,
                     statusText: 'SSR Entrypoint not provided (expected ssrLoader or ssrEntrypointLoader)',
@@ -73,35 +75,38 @@ export const createServer = async ({
 
             const {
                 render,
+                renderError,
                 context,
             } = currentSsrEntrypoint(event, manifest);
 
-            const renderedPartials = await render();
+            let renderedPartials;
+
+            try {
+                renderedPartials = await render();
+            } catch (err) {
+                if (context.appContext.isRedirected()) {
+                    writeHead(event.node.res, context.appContext.response);
+                    return event.node.res.end();
+                }
+
+                renderedPartials = await renderError(err);
+            }
+
             writeHead(event.node.res, context.appContext.response);
 
             if (context.appContext.isRedirected()) {
                 return event.node.res.end();
             }
 
-            /*
-            const mods = await vite.moduleGraph.getModuleByUrl('/app.vue');
-            if (mods) {
-                console.log(mods);
-                // eslint-disable-next-line no-restricted-syntax
-                for (const mod of mods.importedModules) {
-                    if (
-                        (mod.file?.endsWith('.scss')
-                            || mod.file?.endsWith('.css')
-                            || mod.id?.includes('vue&type=style'))
-                        && mod.ssrModule
-                    ) {
-                        console.log(mod);
-                        ssrImplements.headTags +=
-                        `<style type="text/css" data-vite-dev-id="${mod.id}">${mod.ssrModule.default}</style>`;
-                    }
+            if (mode === 'development' && vite && entrypointFilePath && renderedPartials) {
+                const resolvedUrl = await vite.moduleGraph.resolveUrl(entrypointFilePath);
+                const mod = await vite.moduleGraph.getModuleById(resolvedUrl[0]);
+
+                if (mod) {
+                    const cssTags = collectCssTagsFromModules(mod);
+                    renderedPartials.headTags += cssTags;
                 }
             }
-             */
 
             template = htmlTemplateImplementSSR(template, renderedPartials);
         }

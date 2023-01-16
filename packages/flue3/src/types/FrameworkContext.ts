@@ -1,10 +1,7 @@
 import { AppContext } from './AppContext.js';
-import { SSRTemplatePartials } from './SSRTemplatePartials.js';
+import { SSRContext } from './SSRContext.js';
 
 export interface FrameworkContext {
     appContext: AppContext;
-    ssrContext: {
-        teleports?: SSRTemplatePartials['teleports'];
-        modules: Set<string>;
-    };
+    ssrContext: SSRContext;
 }

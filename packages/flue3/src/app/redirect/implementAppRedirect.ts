@@ -15,7 +15,7 @@ export const implementAppRedirect = (appContext: AppContext) => {
         }
     };
 
-    appContext.inject('redirect', redirect);
+    appContext.inject('redirect', redirect, true);
 
     return redirect;
 };

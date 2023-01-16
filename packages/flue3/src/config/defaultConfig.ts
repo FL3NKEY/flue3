@@ -3,6 +3,9 @@ import { Config } from '../types/Config';
 export const defaultConfig: Config = {
     appId: '__flue3',
     entryFilename: './app',
+    entryClientFilename: './entryClient',
+    entryServerFilename: './entryServer',
+    loadingTemplateFilename: false,
     srcPath: 'src',
     outputPath: 'dist',
     mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',

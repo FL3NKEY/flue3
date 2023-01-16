@@ -10,11 +10,13 @@ export interface AppContext extends Record<string, any> {
     isClient: boolean;
     isServer: boolean;
     state: Record<any, any>;
-    writeState: (name: string, data: any) => void;
+    writeState: (key: string, data: any) => void;
+    deleteState: (key: string) => boolean;
     req?: NodeIncomingMessage;
     res?: NodeServerResponse;
     inject: AppInject;
     error: AppError;
+    clearError: () => void;
     errorState: AppErrorState;
     redirect: (location: string, status?: number) => void;
     response: AppResponse;

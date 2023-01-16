@@ -4,6 +4,9 @@ import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
 export interface Config {
     appId: string;
     entryFilename: string;
+    entryClientFilename: string;
+    entryServerFilename: string;
+    loadingTemplateFilename: string | false;
     srcPath: string;
     outputPath: string;
     mode: 'production' | 'development';

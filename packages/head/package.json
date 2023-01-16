@@ -1,6 +1,6 @@
 {
     "name": "@flue3/head",
-    "version": "0.0.5-dev.0",
+    "version": "0.0.13-dev.0",
     "description": "flue3 <head> tag manager plugin",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -9,7 +9,7 @@
     "type": "module",
     "scripts": {
         "dev": "tsc-watch -p tsconfig.json",
-        "build": "tsc -p tsconfig.json"
+        "build": "rimraf lib && tsc -p tsconfig.json"
     },
     "repository": {
         "type": "git",

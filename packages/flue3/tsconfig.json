@@ -8,6 +8,7 @@
         "baseUrl": "./src",
         "paths": {
             "#_FLUE3_UNIVERSAL_ENTRY": ["./app/entryClient.ts"],
+            "#_FLUE3_APP_TARGET_ENTRY": ["./universalEntry/universalEntry.ts"],
             "#_FLUE3_APP_SSR_ENTRY": ["./app/entryServer.ts"],
             "virtual:flue3RuntimeConfig": ["./runtimeConfig/runtimeConfig.ts"],
         },

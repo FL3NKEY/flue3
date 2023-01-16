@@ -1,6 +1,6 @@
 {
     "name": "@flue3/router",
-    "version": "0.0.5-dev.0",
+    "version": "0.0.13-dev.0",
     "description": "flue3 <head> tag manager plugin",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -9,7 +9,7 @@
     "type": "module",
     "scripts": {
         "dev": "tsc-watch -p tsconfig.json",
-        "build": "tsc -p tsconfig.json"
+        "build": "rimraf lib && tsc -p tsconfig.json"
     },
     "repository": {
         "type": "git",
@@ -19,8 +19,8 @@
         "url": "https://github.com/FL3NKEY/flue3/issues"
     },
     "devDependencies": {
-        "vue": "3.2.45",
-        "flue3": "*"
+        "flue3": "*",
+        "vue": "3.2.45"
     },
     "publishConfig": {
         "access": "public"

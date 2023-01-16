@@ -1,5 +1,5 @@
 import { AppContext } from '../../types/AppContext.js';
-import { Cookie } from '../../types/Cookie';
+import { Cookie } from '../../types/Cookie.js';
 import { parseCookie, serializeCookie } from '../../utils/cookie.js';
 
 export const createUniversalCookie = (appContext: AppContext): Cookie => {

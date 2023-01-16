@@ -2,6 +2,7 @@ import { createUniversalEntry } from '../app/entryServer.js';
 import { NodeMiddleware } from 'h3';
 import { SSRManifest } from './SSRManifest.js';
 import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
+import { ViteDevServer } from 'vite';
 
 export interface CreateServerOptions {
     ssr: boolean;
@@ -15,4 +16,6 @@ export interface CreateServerOptions {
     middlewares?: NodeMiddleware[];
     manifest?: SSRManifest;
     publicPath?: [string, string];
+    vite?: ViteDevServer;
+    entrypointFilePath?: string;
 }
