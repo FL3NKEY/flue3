@@ -3,6 +3,7 @@ import {
     createWebHistory,
     createMemoryHistory,
     RouteLocationNormalizedLoaded,
+    RouteRecordRaw,
 } from 'vue-router';
 import { definePlugin } from 'flue3';
 import { pluginRoutes } from './routes/pluginRoutes.js';
@@ -14,8 +15,8 @@ import {
 import { createErrorStateMiddleware } from './middleware/createErrorStateMiddleware.js';
 import { createRoutesMiddleware } from './middleware/createRoutesMiddleware.js';
 import { LayoutComponentsRecord, RouterPluginOptions } from './types.js';
-
-export * from 'vue-router';
+import { proceedUncertainModuleFunc } from 'flue3/lib/utils/proceedUncertainModuleFunc.js';
+import { AppContext } from 'flue3/lib/types/AppContext.js';
 
 export const createRouterPlugin = definePlugin(async (
     {
@@ -25,13 +26,18 @@ export const createRouterPlugin = definePlugin(async (
     },
     options: RouterPluginOptions,
 ) => {
+    const routes = await proceedUncertainModuleFunc<
+    RouteRecordRaw[], AppContext
+    >(options.routes, appContext);
+    const layouts = await proceedUncertainModuleFunc<
+    LayoutComponentsRecord | undefined, AppContext
+    >(options.layouts, appContext);
+
     const router = createRouter({
-        routes: [...options.routes, ...pluginRoutes],
+        routes: [...routes, ...pluginRoutes],
         scrollBehavior: options.scrollBehavior,
         history: appContext.isServer ? createMemoryHistory() : createWebHistory(),
     });
-
-    const layouts: LayoutComponentsRecord = options.layouts ?? {};
 
     inject('router', router);
     inject('layouts', layouts);
@@ -74,4 +80,7 @@ export const createRouterPlugin = definePlugin(async (
     });
 });
 
+export * from 'vue-router';
+export { defineRoutes } from './defines/defineRoutes.js';
+export { defineLayouts } from './defines/defineLayouts.js';
 export { default as RootView } from './components/RootView.js';

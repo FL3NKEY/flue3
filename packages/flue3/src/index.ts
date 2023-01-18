@@ -16,3 +16,5 @@ export { useRedirect } from './app/composables/useRedirect.js';
 
 export { default as AppRoot } from './app/components/AppRoot.js';
 export { default as ClientOnly } from './app/components/ClientOnly.js';
+
+export { AppContext } from './types/AppContext.js';

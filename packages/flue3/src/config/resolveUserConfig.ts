@@ -3,6 +3,7 @@ import {
     WORKDIR,
     USER_CONFIG_FILENAMES,
     APP_PATH,
+    UNIVERSAL_ENTRY_PATH,
 } from '../constants/constants.js';
 import path from 'path';
 import fs from 'fs';
@@ -41,6 +42,7 @@ export const resolveUserConfig = async (): Promise<ConfigDraft> => {
         format: 'cjs',
         plugins: [esAliasPlugin({
             '#_FLUE3_UNIVERSAL_ENTRY': path.join(APP_PATH, 'entryClient.js'),
+            '#_FLUE3_APP_TARGET_ENTRY': path.join(UNIVERSAL_ENTRY_PATH, 'universalEntry.js'),
         })],
     });
 

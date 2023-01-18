@@ -11,7 +11,8 @@ export interface Config {
     outputPath: string;
     mode: 'production' | 'development';
     ssr: boolean;
-    exclude: Array<string>;
+    excludeDeps: Array<string>;
+    minify: boolean;
     server: {
         hostname: string;
         port: number;

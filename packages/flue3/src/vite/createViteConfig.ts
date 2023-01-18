@@ -45,7 +45,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
     const appEntryClientFullPath = path.join(srcFullPath, config.entryClientFilename);
     const appEntryServerFullPath = path.join(srcFullPath, config.entryServerFilename);
     let outDirFullPath = path.join(WORKDIR, config.outputPath);
-    const vHtmlPath = path.join(srcFullPath, 'index.html');
+    const vHtmlPath = path.join(srcFullPath, '.flue3', 'index.html');
     const serverEntryFullPath = path.join(APP_PATH, 'server.js');
     const srcPublicFullPath = path.join(srcFullPath, 'public');
 
@@ -62,7 +62,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             ssrManifest: config.ssr && target === 'client' ? true : undefined,
             outDir: outDirFullPath,
             emptyOutDir: true,
-            minify: true,
+            minify: config.minify,
             ssr: config.ssr && target === 'server' ? serverEntryFullPath : undefined,
             rollupOptions: {
                 input: {
@@ -97,7 +97,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
         },
         optimizeDeps: {
             exclude: [
-                ...(config.exclude || []),
+                ...(config.excludeDeps || []),
                 'flue3',
                 '@flue3/router',
             ],

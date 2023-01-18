@@ -2,10 +2,11 @@ import { Plugin } from 'vite';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { resolveHtmlTemplate } from '../htmlTemplate/resolveHtmlTemplate.js';
-import { resolveUniversalEntrypointPath } from '../appEntrypoint/resolveUniversalEntrypointPath.js';
 import { Config } from '../types/Config.js';
 import { RuntimeConfig } from '../types/RuntimeConfig.js';
 import { copyFiles } from '../utils/copyFiles.js';
+import path from 'path';
+import { APP_PATH } from '../constants/constants.js';
 
 export const frameworkVitePlugin = (config: Config, pluginConfig: {
     target: 'server' | 'client';
@@ -39,6 +40,9 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
         },
         // eslint-disable-next-line consistent-return
         async resolveId(id, importer, resolveOptions) {
+            const resolveUniversalEntrypointPath = (ssr = false) => {
+                return path.join(APP_PATH, ssr ? 'entryServer' : 'entryClient');
+            };
             const resolveAppTargetEntrypointPath = (ssr = false) => {
                 const entryFilePath = ssr ? pluginConfig.appEntryServerFullPath : pluginConfig.appEntryClientFullPath;
                 return entryFilePath;

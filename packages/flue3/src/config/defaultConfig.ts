@@ -10,7 +10,8 @@ export const defaultConfig: Config = {
     outputPath: 'dist',
     mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
     ssr: true,
-    exclude: [],
+    minify: process.env.NODE_ENV !== 'development',
+    excludeDeps: [],
     server: {
         hostname: '0.0.0.0',
         port: 3000,

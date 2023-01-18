@@ -65,12 +65,13 @@ export const createServer = async ({
 
             if (ssrEntrypointLoader) {
                 currentSsrEntrypoint = await ssrEntrypointLoader();
-            } else {
+            }
+
+            if (!currentSsrEntrypoint) {
                 writeHead(event.node.res, {
                     status: 500,
-                    statusText: 'SSR Entrypoint not provided (expected ssrLoader or ssrEntrypointLoader)',
                 });
-                return event.node.res.end();
+                return () => 'SSR Entrypoint not provided (expected ssrLoader or ssrEntrypointLoader)';
             }
 
             const {

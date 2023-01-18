@@ -10,3 +10,4 @@ export const USER_CONFIG_FILENAMES = [
 ];
 export const APP_PATH = path.join(DIRNAME, '../app');
 export const TEMPLATES_PATH = path.join(DIRNAME, '../../templates');
+export const UNIVERSAL_ENTRY_PATH = path.join(DIRNAME, '../universalEntry');

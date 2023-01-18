@@ -1,5 +1,6 @@
 import {
     defineComponent,
+    defineAsyncComponent,
     h,
     VNode,
     Suspense,
@@ -8,7 +9,7 @@ import {
 import { useError } from '../composables/useError.js';
 import { isRedirectError } from '../../utils/error.js';
 
-import AppError from './AppError.js';
+const AppError = defineAsyncComponent(() => import('./AppError.js'));
 
 export default defineComponent({
     name: 'AppRoot',

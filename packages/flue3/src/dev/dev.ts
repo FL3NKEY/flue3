@@ -19,19 +19,19 @@ export const dev = async (configOverwrites?: Config) => {
     const appServerEntryPath = path.join(WORKDIR, config.srcPath, config.entryServerFilename);
 
     if (config.ssr) {
-        vite.watcher.on('change', (filePath) => {
+        vite.watcher.on('change', async (filePath) => {
             if (!filePath.startsWith(appServerEntryPath)) {
                 return;
             }
 
-            const mod = vite.moduleGraph.getModulesByFile(filePath)?.values()?.next()?.value;
+            const resolvedUrl = await vite.moduleGraph.resolveUrl(appEntryPath);
+            const mod = await vite.moduleGraph.getModuleById(resolvedUrl[0]);
 
             if (!mod) {
                 return;
             }
 
-            const parentModule = mod.importedModules?.values()?.next()?.value;
-            vite.reloadModule(parentModule);
+            await vite.reloadModule(mod);
         });
     }
 

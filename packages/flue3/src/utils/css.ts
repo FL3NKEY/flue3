@@ -23,7 +23,7 @@ export const collectCssTagsFromModules = (
                 || mod.id?.includes('vue&type=style'))
             && mod.ssrModule
         ) {
-            styles.set(mod.id!, mod.ssrModule.default);
+            styles.set(mod.id!, mod.url);
         }
         if (mod.importedModules.size > 0 && !checkedModules.has(mod.id)) {
             checkedModules.add(mod.id);
@@ -31,8 +31,8 @@ export const collectCssTagsFromModules = (
         }
     }
     let result = '';
-    styles.forEach((content, id) => {
-        const styleTag = `<style type="text/css" data-vite-css-dev-id="${id}">${content}</style>`;
+    styles.forEach((url, id) => {
+        const styleTag = `<link rel="stylesheet" href="${url}" data-vite-css-dev-id="${id}"></link>`;
         result += styleTag;
     });
     return result;
@@ -41,5 +41,5 @@ export const collectCssTagsFromModules = (
 export const removeCssHotReloaded = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    [...document.querySelectorAll('style[data-vite-css-dev-id]')].forEach((el) => el.remove());
+    [...document.querySelectorAll('link[data-vite-css-dev-id]')].forEach((el) => el.remove());
 };

@@ -21,12 +21,8 @@
     },
     "files": [
         "./flue3.d.ts",
-        "./src/index.ts",
-        "./src/cli.ts",
-        "./src/framework.ts",
-        "./src/app/createApp.ts",
-        "./src/app/entryClient.ts",
-        "./src/app/entryServer.ts",
-        "./src/app/server.ts",
     ],
+    "include": [
+        "./src/**/*"
+    ]
 }
