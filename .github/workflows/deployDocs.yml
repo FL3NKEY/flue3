@@ -2,9 +2,11 @@ name: DeployDocs
 
 on:
     push:
-        branches: [origin]
+        branches:
+            - master
     pull_request:
-        branches: [origin]
+        branches:
+            - master
 
 jobs:
     deploy:
