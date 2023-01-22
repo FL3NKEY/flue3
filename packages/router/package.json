@@ -19,7 +19,7 @@
         "url": "https://github.com/FL3NKEY/flue3/issues"
     },
     "devDependencies": {
-        "flue3": "*",
+        "flue3": "0.0.20-dev.0",
         "vue": "3.2.45"
     },
     "publishConfig": {
