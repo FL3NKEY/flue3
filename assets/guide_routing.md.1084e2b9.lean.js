@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as r}from"./app.b567bfb5.js";const u=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/routing.md"}'),o={name:"guide/routing.md"};function a(n,s,c,i,d,p){return r(),t("div")}const m=e(o,[["render",a]]);export{u as __pageData,m as default};
