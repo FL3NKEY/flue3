@@ -6,7 +6,7 @@ import {
 import { CreateAppOptions } from '../types/CreateAppOptions.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
 import { createAppContext } from './context/createAppContext.js';
-import { AppHook } from '../types/AppHook.js';
+import { CreateApp } from '../types/CreateApp.js';
 import { implementAppInjector } from './inject/implementAppInjector.js';
 import entryClient from '#_FLUE3_APP_TARGET_ENTRY';
 import { createDevtools } from './devtools/createDevtools.js';
@@ -15,7 +15,7 @@ import { removeCssHotReloaded } from '../utils/css.js';
 export const createUniversalEntry = async (
     App: Component,
     options: CreateAppOptions,
-    hook: AppHook,
+    createApp: CreateApp,
 ) => {
     const context = createFrameworkContext();
     context.appContext = createAppContext();
@@ -24,8 +24,8 @@ export const createUniversalEntry = async (
 
     implementAppInjector(context.appContext);
 
-    const hookReturns = await hook(context);
-    await hookReturns.runPluginsHook('afterHook');
+    await createApp(context);
+    await context.appContext.hooks.callHook('app:created');
 
     await entryClient(context.appContext);
 

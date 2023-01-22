@@ -22,7 +22,6 @@ export const createRouterPlugin = definePlugin(async (
     {
         appContext,
         inject,
-        onAfterEntry,
     },
     options: RouterPluginOptions,
 ) => {
@@ -69,7 +68,7 @@ export const createRouterPlugin = definePlugin(async (
 
     createErrorStateMiddleware(appContext);
 
-    onAfterEntry(async () => {
+    appContext.hooks.hook('entry:after', async () => {
         createRoutesMiddleware(appContext);
 
         if (appContext.isServer) {

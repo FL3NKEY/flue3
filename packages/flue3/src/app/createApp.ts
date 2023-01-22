@@ -8,29 +8,24 @@ import { implementAppRedirect } from './redirect/implementAppRedirect.js';
 import { createPlugins } from './plugins/createPlugins.js';
 import { implementState } from './state/implementState.js';
 import { implementCookie } from './cookie/implementCookie.js';
+import { implementAppHooks } from './hooks/implementAppHooks.js';
 
 export const createApp = (
     App: Component,
     options?: CreateAppOptions,
     universalEntry?: (appContext: AppContext) => void,
-) => {
-    return createUniversalEntry(App, options ?? {}, async (context) => {
-        implementCookie(context.appContext);
-        implementState(context.appContext);
-        provideAppContext(context.appContext.vueApp, context.appContext);
-        implementAppError(context.appContext);
-        implementAppRedirect(context.appContext);
+) => createUniversalEntry(App, options ?? {}, async (context) => {
+    implementAppHooks(context.appContext);
+    implementCookie(context.appContext);
+    implementState(context.appContext);
+    provideAppContext(context.appContext.vueApp, context.appContext);
+    implementAppError(context.appContext);
+    implementAppRedirect(context.appContext);
+    await createPlugins(options?.plugins, context.appContext);
 
-        const { runPluginsHook } = await createPlugins(options?.plugins, context.appContext);
+    if (universalEntry) {
+        await universalEntry(context.appContext);
+    }
 
-        if (universalEntry) {
-            await universalEntry(context.appContext);
-        }
-
-        await runPluginsHook('afterEntry');
-
-        return {
-            runPluginsHook,
-        };
-    });
-};
+    await context.appContext.hooks.callHook('entry:after');
+});

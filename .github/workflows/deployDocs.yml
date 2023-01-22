@@ -18,9 +18,10 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 16.13.0
+                  cache: yarn
 
             - name: Install
-              run: npm install
+              run: yarn
 
             - name: Build
               run: npm run docs:build

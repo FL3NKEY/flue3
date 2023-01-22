@@ -1,11 +1,11 @@
 import { definePlugin } from 'flue3';
 import { createHead, renderHeadToString } from '@vueuse/head';
 
-export const createHeadPlugin = definePlugin(({ appContext, onAfterRender }, initialHead) => {
+export const createHeadPlugin = definePlugin(({ appContext }, initialHead) => {
     const head = createHead(initialHead);
     appContext.vueApp.use(head);
 
-    onAfterRender(async (renderPartials) => {
+    appContext.hooks.hook('render:after', async (renderPartials) => {
         try {
             const renderedHead = await renderHeadToString(head);
 

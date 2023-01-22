@@ -4,6 +4,8 @@ import { AppInject } from './AppInject.js';
 import { AppError, AppErrorState } from './AppError.js';
 import { AppResponse, AppWriteResponse } from './AppResponse.js';
 import { Cookie } from './Cookie.js';
+import { Hookable } from 'hookable';
+import { AppHooks } from './AppHooks.js';
 
 export interface AppContext extends Record<string, any> {
     vueApp: App;
@@ -27,4 +29,5 @@ export interface AppContext extends Record<string, any> {
     getCookie: Cookie['get'];
     hasCookie: Cookie['has'];
     removeCookie: Cookie['remove'];
+    hooks: Hookable<AppHooks>;
 }

@@ -2,6 +2,8 @@ import {
     ref,
     watch,
     Ref,
+    UnwrapRef,
+    onBeforeUnmount,
 } from 'vue';
 import { useAppContext } from './useAppContext.js';
 
@@ -22,6 +24,19 @@ export const useState = <T>(key: string, initialValue?: () => T): Ref<T> => {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const refValue = ref<T>(initialRefValue!);
+
+    const unregisterStateHook = appContext.hooks.hook(
+        'state:changed',
+        (key, data: UnwrapRef<T>) => {
+            if (key === stateKey && refValue.value !== data) {
+                refValue.value = data;
+            }
+        },
+    );
+
+    onBeforeUnmount(() => {
+        unregisterStateHook();
+    });
 
     watch(refValue, (newValue) => {
         appContext.writeState(stateKey, newValue);

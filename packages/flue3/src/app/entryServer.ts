@@ -7,7 +7,7 @@ import { createSSRContext } from './context/createSSRContext.js';
 import { createAndImplementServerResponse } from './response/createAndImplementServerResponse.js';
 import { createFrameworkContext } from './context/createFrameworkContext.js';
 import { SSRRenderReturns } from '../types/SSRRenderReturns.js';
-import { AppHook } from '../types/AppHook.js';
+import { CreateApp } from '../types/CreateApp.js';
 import { SSRManifest } from '../types/SSRManifest.js';
 import { H3Event } from 'h3';
 import { implementAppInjector } from './inject/implementAppInjector.js';
@@ -17,7 +17,7 @@ import entryServer from '#_FLUE3_APP_TARGET_ENTRY';
 export const createUniversalEntry = (
     App: Component,
     options: CreateAppOptions,
-    hook: AppHook,
+    createApp: CreateApp,
 ) => {
     return (serverEvent: H3Event, manifest?: SSRManifest) => {
         const context = createFrameworkContext();
@@ -37,24 +37,19 @@ export const createUniversalEntry = (
                 teleports: {},
             };
 
-            let hookReturns = {} as Awaited<ReturnType<typeof hook>>;
-            const proceedHook = async () => {
-                hookReturns = await hook(context);
-            };
-
             context.appContext.vueApp = createVueApp(App);
 
             implementAppInjector(context.appContext);
             const { redirectDefer } = createAndImplementServerResponse(context.appContext);
 
-            await Promise.race([proceedHook(), redirectDefer.promise]);
-            await hookReturns.runPluginsHook('afterHook');
+            await Promise.race([createApp(context), redirectDefer.promise]);
+            await context.appContext.hooks.callHook('app:created');
             if (context.appContext.isRedirected()) return undefined;
 
             await entryServer(context.appContext);
             if (context.appContext.isRedirected()) return undefined;
 
-            await hookReturns.runPluginsHook('beforeRender', renderPartials);
+            await context.appContext.hooks.callHook('render:before', renderPartials);
             if (beforeRender) {
                 beforeRender();
             }
@@ -71,7 +66,7 @@ export const createUniversalEntry = (
                 ...renderPartials.teleports,
             };
 
-            await hookReturns.runPluginsHook('afterRender', renderPartials);
+            await context.appContext.hooks.callHook('render:after', renderPartials);
             if (context.appContext.isRedirected()) return undefined;
 
             return {

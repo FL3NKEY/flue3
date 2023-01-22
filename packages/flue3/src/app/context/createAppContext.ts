@@ -2,6 +2,8 @@ import { App } from 'vue';
 import { AppContext } from '../../types/AppContext.js';
 import { AppErrorState } from '../../types/AppError.js';
 import { clientExternalRedirect } from '../../utils/clientExternalRedirect.js';
+import { Hookable } from 'hookable';
+import { AppHooks } from '../../types/AppHooks.js';
 
 export const createAppContext = (): AppContext => {
     return {
@@ -33,5 +35,6 @@ export const createAppContext = (): AppContext => {
             return false;
         },
         removeCookie: () => console.error('[flue3] removeCookie not defined yet'),
+        hooks: {} as Hookable<AppHooks>,
     };
 };
