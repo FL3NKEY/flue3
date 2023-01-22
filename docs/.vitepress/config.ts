@@ -1,7 +1,6 @@
 import {defineConfig} from 'vitepress';
 
 export default defineConfig({
-    base: '/flue3',
     appearance: 'dark',
     title: 'flue3',
     description: 'flue3 Web-фреймворк основанный на Vite и Vue 3',
