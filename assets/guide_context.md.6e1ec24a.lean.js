@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a,a as o}from"./app.df5f6e1b.js";const u=JSON.parse('{"title":"Контекст приложения","description":"","frontmatter":{},"headers":[],"relativePath":"guide/context.md"}'),n={name:"guide/context.md"},r=o("",4),s=[r];function c(p,d,i,_,h,l){return a(),t("div",null,s)}const f=e(n,[["render",c]]);export{u as __pageData,f as default};
