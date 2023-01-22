@@ -1,0 +1,1 @@
+import{_ as e,c as t,o}from"./app.7ea1f75b.js";const _=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/modes.md"}'),a={name:"guide/modes.md"};function s(r,c,n,d,i,m){return o(),t("div")}const f=e(a,[["render",s]]);export{_ as __pageData,f as default};

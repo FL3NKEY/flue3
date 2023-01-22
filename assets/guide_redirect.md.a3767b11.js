@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as r}from"./app.7ea1f75b.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/redirect.md"}'),a={name:"guide/redirect.md"};function c(o,s,n,d,i,p){return r(),t("div")}const f=e(a,[["render",c]]);export{m as __pageData,f as default};

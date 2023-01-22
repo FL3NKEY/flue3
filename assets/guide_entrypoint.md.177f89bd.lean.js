@@ -1,1 +1,0 @@
-import{_ as e,c as t,o as n}from"./app.b567bfb5.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"guide/entrypoint.md"}'),r={name:"guide/entrypoint.md"};function o(a,s,c,i,p,d){return n(),t("div")}const f=e(r,[["render",o]]);export{m as __pageData,f as default};

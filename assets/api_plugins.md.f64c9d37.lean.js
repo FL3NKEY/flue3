@@ -1,0 +1,1 @@
+import{_ as s,c as n,o as a,a as l}from"./app.7ea1f75b.js";const i=JSON.parse('{"title":"Плагины","description":"","frontmatter":{},"headers":[],"relativePath":"api/plugins.md"}'),p={name:"api/plugins.md"},o=l("",7),e=[o];function t(c,r,y,D,C,F){return a(),n("div",null,e)}const B=s(p,[["render",t]]);export{i as __pageData,B as default};
