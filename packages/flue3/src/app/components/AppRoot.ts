@@ -10,6 +10,7 @@ import { useError } from '../composables/useError.js';
 import { isRedirectError } from '../../utils/error.js';
 
 const AppError = defineAsyncComponent(() => import('./AppError.js'));
+const AppWelcome = defineAsyncComponent(() => import('./AppWelcome.js'));
 
 export default defineComponent({
     name: 'AppRoot',
@@ -55,7 +56,7 @@ export default defineComponent({
                 return Error();
             }
 
-            return slots.default ? slots.default() : null;
+            return slots.default ? slots.default() : h(AppWelcome);
         };
 
         return () => h(Suspense, {

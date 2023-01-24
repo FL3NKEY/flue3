@@ -1,6 +1,5 @@
 import { Plugin } from 'vite';
-import fs from 'fs';
-import fsp from 'fs/promises';
+import fs from 'fs-extra';
 import { resolveHtmlTemplate } from '../htmlTemplate/resolveHtmlTemplate.js';
 import { Config } from '../types/Config.js';
 import { RuntimeConfig } from '../types/RuntimeConfig.js';
@@ -16,6 +15,9 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
     appEntryServerFullPath: string;
     vHtmlPath: string;
     srcPublicFullPath: string;
+    outDirFullPath: string;
+    outAssetsDir: string;
+    outAssetsDirFullPath: string;
     outPublicFullPath: string;
 }): Plugin => {
     const vRuntimeConfig = 'virtual:flue3RuntimeConfig';
@@ -34,7 +36,8 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
             if (viteCommand === 'build') {
                 if (!fs.existsSync(pluginConfig.vHtmlPath)) {
                     isVHtml = true;
-                    await fsp.writeFile(pluginConfig.vHtmlPath, resolveHtmlTemplate(config));
+
+                    await fs.outputFile(pluginConfig.vHtmlPath, resolveHtmlTemplate(config));
                 }
             }
         },
@@ -44,8 +47,7 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                 return path.join(APP_PATH, ssr ? 'entryServer' : 'entryClient');
             };
             const resolveAppTargetEntrypointPath = (ssr = false) => {
-                const entryFilePath = ssr ? pluginConfig.appEntryServerFullPath : pluginConfig.appEntryClientFullPath;
-                return entryFilePath;
+                return ssr ? pluginConfig.appEntryServerFullPath : pluginConfig.appEntryClientFullPath;
             };
 
             const aliasResolves: Record<string, string> = {
@@ -82,6 +84,7 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
         load(id) {
             if (id === resolvedVRuntimeConfig) {
                 const runtimeConfig: RuntimeConfig = {
+                    basePath: config.basePath,
                     server: config.server,
                 };
 
@@ -93,26 +96,34 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
             }
         },
         async writeBundle() {
-            if (pluginConfig.target === 'client') {
-                if (viteCommand === 'build') {
-                    if (fs.existsSync(pluginConfig.srcPublicFullPath)) {
-                        try {
-                            await copyFiles(
-                                [pluginConfig.srcPublicFullPath + '/**/*'],
-                                pluginConfig.outPublicFullPath,
-                            );
-                        } catch (err) {
-                            console.error('[flue3] filed to copy public dir', err);
-                        }
+            if (pluginConfig.target === 'client' && viteCommand === 'build') {
+                if (fs.existsSync(pluginConfig.srcPublicFullPath)) {
+                    try {
+                        await copyFiles(
+                            [pluginConfig.srcPublicFullPath + '/**/*'],
+                            pluginConfig.outPublicFullPath,
+                        );
+                    } catch (err) {
+                        console.error('[flue3] filed to copy public dir', err);
                     }
+                }
+
+                if (fs.existsSync(pluginConfig.outAssetsDirFullPath)) {
+                    await fs.move(
+                        pluginConfig.outAssetsDirFullPath,
+                        path.join(pluginConfig.outPublicFullPath, pluginConfig.outAssetsDir),
+                        {
+                            overwrite: true,
+                        },
+                    );
                 }
             }
         },
-        async buildEnd() {
+        async closeBundle() {
             if (isVHtml) {
                 if (fs.existsSync(pluginConfig.vHtmlPath)) {
                     try {
-                        await fsp.rm(pluginConfig.vHtmlPath, {
+                        await fs.rm(pluginConfig.vHtmlPath, {
                             recursive: true,
                         });
                     } catch {}

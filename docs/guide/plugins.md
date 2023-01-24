@@ -11,11 +11,17 @@ interface MyPluginOptions {
 }
 
 export const createMyPlugin = definePlugin<MyPluginOptions>(({
-    appContext, // контекст приложения
-    inject, // функция для расширения контекста
+    appContext,
+    inject,
 }, /* принимаем опции вторым аргументом */ {
     prefix,
 }) => {
+    /*
+    Если вам нужен инстант Vue приложения (например для .use),
+    то вы можете его достать из appContext.vueApp
+    */
+    appContext.vueApp.use(/* external plugin */);
+    
     const hello = (str: string) => console.log(`${prefix} ${str}`);
     
     // в appContext будет добавлено свойство hello

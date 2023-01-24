@@ -24,6 +24,15 @@ export default defineConfig({
 
 Идентификатор приложения. Используется в основном для генирации уникальных DOM-узлов.
 
+## basePath
+
+Тип: `string`<br>
+Значение по умлочанию: `'/'`
+
+Указывает базовый путь для работы приложения. Все статические файлы, роутинг и прокси будут иметь именно этот префикс.
+
+Значение должно начинаться и заканчиваться слешем: `/example/`.
+
 ## entryFilename
 
 Тип: `string`<br>
@@ -97,6 +106,22 @@ export default defineConfig({
 Значение по умолчанию: `process.env.NODE_ENV !== 'development'`
 
 Минифицировать ли бандл-файлы.
+
+## aliases
+Тип: `Record<string, string>`<br>
+Значение по умолчанию: `{}`
+
+Алиасы для резолвинга путей в импортах. Реализуется с помощью [Vite resolve.alias](https://vitejs.dev/config/shared-options.html#resolve-alias).
+
+По умолчанию из коробки указаны несколько алиасов:
+- `@` - Путь к директрии исходников 
+  ```typescript
+  import Comp from '@/components/Comp.vue';
+  ```
+- `~` - Путь к корневой директории
+  ```typescript
+  import Comp from '~/src/components/Comp.vue';
+  ```
 
 ## excludeDeps
 Тип: `string[]`<br>

@@ -45,7 +45,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
     const appEntryClientFullPath = path.join(srcFullPath, config.entryClientFilename);
     const appEntryServerFullPath = path.join(srcFullPath, config.entryServerFilename);
     let outDirFullPath = path.join(WORKDIR, config.outputPath);
-    const vHtmlPath = path.join(srcFullPath, '.flue3', 'index.html');
+    const vHtmlPath = path.join(srcFullPath, 'index.html');
     const serverEntryFullPath = path.join(APP_PATH, 'server.js');
     const srcPublicFullPath = path.join(srcFullPath, 'public');
 
@@ -54,10 +54,13 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
     }
 
     const outPublicFullPath = path.join(outDirFullPath, 'public');
+    const outAssetsDir = 'assets';
+    const outAssetsDirFullPath = path.join(outDirFullPath, 'assets');
 
     return {
         mode: config.mode,
         root: srcFullPath,
+        base: config.basePath,
         build: {
             ssrManifest: config.ssr && target === 'client' ? true : undefined,
             outDir: outDirFullPath,
@@ -69,12 +72,13 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                     index: vHtmlPath,
                 },
             },
-            copyPublicDir: false,
-            assetsDir: target === 'server' ? 'chunks' : 'public/assets',
+            assetsDir: target === 'server' ? 'chunks' : outAssetsDir,
             commonjsOptions: {
                 transformMixedEsModules: true,
             },
+            copyPublicDir: false,
         },
+        publicDir: 'public',
         plugins: [
             frameworkVitePlugin(config, {
                 target,
@@ -84,6 +88,9 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                 appEntryServerFullPath,
                 vHtmlPath,
                 srcPublicFullPath,
+                outDirFullPath,
+                outAssetsDir,
+                outAssetsDirFullPath,
                 outPublicFullPath,
             }),
             vuePlugin(),
@@ -106,11 +113,13 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             alias: {
                 '@': srcFullPath,
                 '~': WORKDIR,
+                ...config.aliases,
             },
         },
         define: {
             FLUE3_APP_ID: JSON.stringify(config.appId),
             FLUE3_SSR_ENABLED: config.ssr,
+            FLUE3_BASE_URL: JSON.stringify(config.basePath),
         },
         configFile: false,
         envFile: false,

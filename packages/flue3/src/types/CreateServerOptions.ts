@@ -7,6 +7,7 @@ import { ViteDevServer } from 'vite';
 export interface CreateServerOptions {
     ssr: boolean;
     mode: 'production' | 'development';
+    basePath: string;
     hostname: string;
     port: number;
     ssrEntrypoint?: ReturnType<typeof createUniversalEntry>;

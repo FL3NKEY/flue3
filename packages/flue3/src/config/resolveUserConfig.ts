@@ -6,7 +6,7 @@ import {
     UNIVERSAL_ENTRY_PATH,
 } from '../constants/constants.js';
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { createRequire } from 'module';
 import esAliasPlugin from 'esbuild-plugin-alias';
 

@@ -19,12 +19,13 @@ const publicPath = path.join(distPath, 'client/public');
     await createServer({
         ssr: true,
         mode: 'production',
+        basePath: runtimeConfig.basePath,
         hostname: runtimeConfig.server.hostname,
         port: runtimeConfig.server.port,
         proxies: runtimeConfig.server.proxies,
         ssrEntrypoint,
         htmlTemplate,
         manifest,
-        publicPath: ['/public', publicPath],
+        publicPath: ['/', publicPath],
     });
 })();

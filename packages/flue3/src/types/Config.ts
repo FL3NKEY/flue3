@@ -3,6 +3,7 @@ import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
 
 export interface Config {
     appId: string;
+    basePath: string;
     entryFilename: string;
     entryClientFilename: string;
     entryServerFilename: string;
@@ -13,6 +14,7 @@ export interface Config {
     ssr: boolean;
     excludeDeps: Array<string>;
     minify: boolean;
+    aliases: Record<string, string>;
     server: {
         hostname: string;
         port: number;

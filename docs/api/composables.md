@@ -77,25 +77,33 @@ console.log('этот код не выполнится');
 </script>
 ```
 
-## useFetch
+## useAsyncData
 
 Тип:
 ```typescript
-function useFetch <T>(
+function useAsyncData <T>(
     key: string,
-    hook: FetchHook<T>,
-    options?: FetchOptions<T>,
-): FetchReturn<T>
+    handler: AsyncDataHandler<T>,
+    options?: AsyncDataOptions<T>,
+): AsyncDataReturn<T>
 
-type FetchHook<T> = (appContext: AppContext) => Promise<T> | T;
+type AsyncDataHandler<T> = (appContext: AppContext) => Promise<T> | T;
+type loadFn = () => Promise<void>;
 
-interface FetchOptions<T> {
+interface AsyncDataOptions<T> {
     lazy?: boolean;
-    initialFetch?: boolean;
+    immediate?: boolean;
     initialValue?: () => T;
 }
 
-interface FetchReturnBody<T> {
+interface AsyncDataState<T> {
+    serverPrefetched: boolean;
+    data: T;
+    pending: boolean;
+    error: unknown;
+}
+
+interface AsyncDataReturnBody<T> {
     data: Ref<T>;
     pending: ComputedRef<boolean>;
     error: ComputedRef<unknown>;
@@ -103,14 +111,14 @@ interface FetchReturnBody<T> {
     refresh: loadFn;
 }
 
-type FetchReturn<T> = Promise<FetchReturnBody<T>> | FetchReturnBody<T>;
+type AsyncDataReturn<T> = Promise<AsyncDataReturnBody<T>> | AsyncDataReturnBody<T>;
 ```
 
 Функция для работы и получения асинхроных данных и их сереализации при гидрации приложения уже на клиенте.
 
 ```vue
 <script lang="ts" setup>
-import { useFetch } from 'flue3';
+import { useAsyncData } from 'flue3';
 
 const {
     data,
@@ -118,7 +126,7 @@ const {
     error,
     load,
     refresh,
-} = await useFetch('posts', async () => {
+} = await useAsyncData('posts', async () => {
     const posts = await fetch('/api/posts')
         .then((response) => response.json());
 
@@ -133,11 +141,11 @@ console.log(data.value);
 
 ### lazy
 
-Если передать `lazy` параметр, то `useFetch` не будет возвращать `Promise` и выполнится только на клиенте (браузере) в хуке `onMounted`.
+Если передать `lazy` параметр, то `useAsyncData` не будет возвращать `Promise` и выполнится только на клиенте (браузере) в хуке `onMounted`.
 
 ```vue
 <script lang="ts" setup>
-import { useFetch } from 'flue3';
+import { useAsyncData } from 'flue3';
 
 const {
     data,
@@ -145,7 +153,7 @@ const {
     error,
     load,
     refresh,
-} = useFetch('posts', async () => {
+} = useAsyncData('posts', async () => {
     // логика запроса
 }, {
   lazy: true, // указаываем lazy параметр
@@ -157,13 +165,13 @@ console.log(data.value);
 </script>
 ```
 
-### initialFetch
+### immediate
 
-`useFetch` сам инициализирует переданую функцию, где описана ваша логика. Если передать `initialFetch` параметр, то `useFetch` не будет возвращать `Promise`. Для вызова используйте метод `load`.
+`useAsyncData` сам инициализирует переданую функцию, где описана ваша логика. Если передать `immediate` параметр, то `useAsyncData` не будет возвращать `Promise`. Для вызова используйте метод `load`.
 
 ```vue
 <script lang="ts" setup>
-import { useFetch } from 'flue3';
+import { useAsyncData } from 'flue3';
 
 const {
     data,
@@ -171,10 +179,10 @@ const {
     error,
     load,
     refresh,
-} = useFetch('posts', async () => {
+} = useAsyncData('posts', async () => {
     // логика запроса
 }, {
-  initialFetch: false, // указаываем initialFetch параметр
+    immediate: false, // указаываем immediate параметр
 });
 
 // данные ещё не получены
@@ -187,13 +195,13 @@ console.log(data.value);
 </script>
 ```
 
-## useLazyFetch
+## useLazyAsyncData
 
-`useLazyFetch` это простая обёртка над `useFetch`, который по умолчанию содержит в себе параметр `lazy: true`. Таким образом его API  одинаковое как и с `useFetch`.
+`useLazyAsyncData` это простая обёртка над `useAsyncData`, который по умолчанию содержит в себе параметр `lazy: true`. Таким образом его API  одинаковое как и с `useAsyncData`.
 
 ```vue
 <script lang="ts" setup>
-import { useLazyFetch } from 'flue3';
+import { useLazyAsyncData } from 'flue3';
 
 const {
     data,
@@ -201,7 +209,7 @@ const {
     error,
     load,
     refresh,
-} = useLazyFetch('posts', async () => {
+} = useLazyAsyncData('posts', async () => {
     // логика запроса
 });
 

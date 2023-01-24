@@ -14,7 +14,6 @@ export const dev = async (configOverwrites?: Config) => {
     const config = await resolveConfig(configOverwrites);
     const viteConfig = createViteConfig(config);
     const vite = await createViteServer(viteConfig);
-    const srcPublicPath = path.join(WORKDIR, config.srcPath, 'public');
     const appEntryPath = path.join(WORKDIR, config.srcPath, config.entryFilename);
     const appServerEntryPath = path.join(WORKDIR, config.srcPath, config.entryServerFilename);
 
@@ -45,12 +44,12 @@ export const dev = async (configOverwrites?: Config) => {
     await createServer({
         ssr: config.ssr,
         mode: 'development',
+        basePath: config.basePath,
         hostname: config.server.hostname,
         port: config.server.port,
         ssrEntrypointLoader,
         htmlTemplate,
         middlewares: [vite.middlewares],
-        publicPath: ['/public', srcPublicPath],
         proxies: config.server.proxies,
         vite,
         entrypointFilePath: appEntryPath,

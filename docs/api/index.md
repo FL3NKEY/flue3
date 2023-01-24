@@ -1,6 +1,6 @@
 # Приложение
 
-## createApp()
+## createApp
 
 Тип:
 ```typescript

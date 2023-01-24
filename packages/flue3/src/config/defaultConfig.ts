@@ -2,6 +2,7 @@ import { Config } from '../types/Config';
 
 export const defaultConfig: Config = {
     appId: '__flue3',
+    basePath: '/',
     entryFilename: './app',
     entryClientFilename: './entryClient',
     entryServerFilename: './entryServer',
@@ -11,6 +12,7 @@ export const defaultConfig: Config = {
     mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
     ssr: true,
     minify: process.env.NODE_ENV !== 'development',
+    aliases: {},
     excludeDeps: [],
     server: {
         hostname: '0.0.0.0',

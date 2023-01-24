@@ -32,7 +32,7 @@ export default defineEntry(async () => {
 
 ## В компонентах
 
-Так же асинхронное выполнение кода доступна и в компонентах в функции `setup`. Реализованно это с помощью [Suspense](https://vuejs.org/guide/built-ins/suspense.html).
+Так же асинхронное выполнение кода доступна и в компонентах в функции `setup`. С [Suspense](https://vuejs.org/guide/built-ins/suspense.html) SSR сервер и редеринг на клиенте будут ожидать выполнения асинхронного, прежде чем что-то отобразить.
 
 ```vue
 
@@ -41,7 +41,7 @@ export default defineEntry(async () => {
 </template>
 
 <script lang="ts" setup>
-import {useFetch, useMiddleware} from 'flue3';
+import {useAsyncData, useMiddleware} from 'flue3';
 import {defineAsyncComponent} from 'vue';
 
 import {myAsyncMiddleware} from '@/middleware/myAsyncMiddleware.ts';
@@ -52,7 +52,8 @@ const MyAsyncComp = defineAsyncComponent(
 
 await useMiddleware(myAsyncMiddleware);
 
-const { data } = await useFetch('someFetch',
+const { data } = await useAsyncData(
+    'someFetch',
     async () => { /* fetch logic */ }
 );
 </script>
