@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as n,a as e}from"./app.df5f6e1b.js";const A=JSON.parse('{"title":"Перенаправление навигации","description":"","frontmatter":{},"headers":[],"relativePath":"guide/redirect.md"}'),o={name:"guide/redirect.md"},l=e("",5),p=[l];function t(c,r,i,D,y,d){return n(),a("div",null,p)}const C=s(o,[["render",t]]);export{A as __pageData,C as default};
