@@ -3,7 +3,6 @@ import {
     createWebHistory,
     createMemoryHistory,
     RouteLocationNormalizedLoaded,
-    RouteRecordRaw,
 } from 'vue-router';
 import { definePlugin } from 'flue3';
 import { pluginRoutes } from './routes/pluginRoutes.js';
@@ -14,9 +13,14 @@ import {
 } from 'vue';
 import { createErrorStateMiddleware } from './middleware/createErrorStateMiddleware.js';
 import { createRoutesMiddleware } from './middleware/createRoutesMiddleware.js';
-import { LayoutComponentsRecord, RouterPluginOptions } from './types.js';
+import {
+    LayoutComponentsRecord,
+    RouteRecord,
+    RouterPluginOptions,
+} from './types.js';
 import { proceedUncertainModuleFunc } from 'flue3/lib/utils/proceedUncertainModuleFunc.js';
 import { AppContext } from 'flue3/lib/types/AppContext.js';
+import { parseRoutesRecordToRaw } from './utils.js';
 
 export const createRouterPlugin = definePlugin(async (
     {
@@ -26,14 +30,14 @@ export const createRouterPlugin = definePlugin(async (
     options: RouterPluginOptions,
 ) => {
     const routes = await proceedUncertainModuleFunc<
-    RouteRecordRaw[], AppContext
+    RouteRecord[], AppContext
     >(options.routes, appContext);
     const layouts = await proceedUncertainModuleFunc<
     LayoutComponentsRecord | undefined, AppContext
     >(options.layouts, appContext);
 
     const router = createRouter({
-        routes: [...routes, ...pluginRoutes],
+        routes: [...parseRoutesRecordToRaw(routes), ...pluginRoutes],
         scrollBehavior: options.scrollBehavior,
         history: appContext.isServer ? createMemoryHistory() : createWebHistory(),
     });
