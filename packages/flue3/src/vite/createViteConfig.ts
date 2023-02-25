@@ -71,6 +71,11 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                 input: {
                     index: vHtmlPath,
                 },
+                output: {
+                    assetFileNames: config.mode === 'production' ? () => {
+                        return path.join(outAssetsDir, '[name].[hash][extname]');
+                    } : undefined,
+                },
             },
             assetsDir: target === 'server' ? 'chunks' : outAssetsDir,
             commonjsOptions: {
