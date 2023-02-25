@@ -4,7 +4,6 @@
         "packages/*"
     ],
     "scripts": {
-        "install": "lerna exec yarn",
         "build": "lerna run build",
         "version": "lerna version --no-push --no-commit-hooks --no-git-tag-version",
         "publish": "lerna exec npm publish",

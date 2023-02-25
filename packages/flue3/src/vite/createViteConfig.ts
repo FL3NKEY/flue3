@@ -1,10 +1,10 @@
 import { Config } from '../types/Config.js';
-import { InlineConfig } from 'vite';
+import { InlineConfig, Plugin } from 'vite';
 import vuePlugin from '@vitejs/plugin-vue';
 import path from 'path';
 import { WORKDIR, APP_PATH } from '../constants/constants.js';
 import { frameworkVitePlugin } from './frameworkVitePlugin.js';
-import progressPlugin from 'vite-plugin-progress';
+import progressPlugin from 'rollup-plugin-progress';
 
 const builtInModules = [
     'assert',
@@ -94,10 +94,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
                 outPublicFullPath,
             }),
             vuePlugin(),
-            progressPlugin({
-                format: `[flue3] building ${target} [:bar] :percent`,
-                clear: true,
-            }),
+            progressPlugin() as Plugin,
         ],
         ssr: {
             noExternal: [...ssrNoExternalPattern],
