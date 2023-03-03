@@ -10,9 +10,11 @@ import { htmlTemplateImplementSSR } from '../htmlTemplate/htmlTemplateImplements
 import serveStatic from 'serve-static';
 import { CreateServerOptions } from '../types/CreateServerOptions.js';
 import { createProxyHandler } from './createProxyHandler.js';
-import { implementFetchPolyfill } from './implementFetchPolyfill.js';
+import { implementFetchPolyfill, implementPreparedFetchPolyfill } from './implementPreparedFetchPolyfill.js';
 import { collectCssTagsFromModules } from '../utils/css.js';
 import path from 'path';
+
+implementFetchPolyfill();
 
 export const createServer = async ({
     mode,
@@ -33,7 +35,7 @@ export const createServer = async ({
     const basePathWithoutSlash = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
     const basePathWithSlash = basePathWithoutSlash + '/';
 
-    implementFetchPolyfill({
+    implementPreparedFetchPolyfill({
         hostname,
         port,
     });
