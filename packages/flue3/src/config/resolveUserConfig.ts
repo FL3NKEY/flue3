@@ -43,6 +43,7 @@ export const resolveUserConfig = async (): Promise<ConfigDraft> => {
         plugins: [esAliasPlugin({
             '#_FLUE3_UNIVERSAL_ENTRY': path.join(APP_PATH, 'entryClient.js'),
             '#_FLUE3_APP_TARGET_ENTRY': path.join(UNIVERSAL_ENTRY_PATH, 'universalEntry.js'),
+            'virtual:flue3AppConfig': path.join(APP_PATH, 'config/appConfig.js'),
         })],
     });
 
