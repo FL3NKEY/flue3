@@ -1,6 +1,6 @@
 {
     "name": "@flue3/router",
-    "version": "0.1.4-dev.0",
+    "version": "0.1.5-dev.0",
     "description": "flue3 <head> tag manager plugin",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -19,7 +19,7 @@
         "url": "https://github.com/FL3NKEY/flue3/issues"
     },
     "devDependencies": {
-        "flue3": "^0.1.4-dev.0",
+        "flue3": "^0.1.5-dev.0",
         "vue": "3.2.45"
     },
     "publishConfig": {
