@@ -9,6 +9,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import { createRequire } from 'module';
 import esAliasPlugin from 'esbuild-plugin-alias';
+import { loadEnv } from 'vite';
+import * as process from 'process';
 
 let userConfigCache: ConfigDraft;
 
@@ -31,6 +33,8 @@ export const resolveUserConfig = async (): Promise<ConfigDraft> => {
     }
 
     const { build: esBuild } = await import('esbuild');
+    const env = loadEnv(process.env.NODE_ENV || 'production', WORKDIR, 'APP_');
+
     const esResult = await esBuild({
         absWorkingDir: WORKDIR,
         entryPoints: [foundedUserConfigFilePath],
@@ -45,6 +49,13 @@ export const resolveUserConfig = async (): Promise<ConfigDraft> => {
             '#_FLUE3_APP_TARGET_ENTRY': path.join(UNIVERSAL_ENTRY_PATH, 'universalEntry.js'),
             'virtual:flue3AppConfig': path.join(APP_PATH, 'config/appConfig.js'),
         })],
+        define: {
+            'import.meta.env': JSON.stringify({
+                ...env,
+                DEV: process.env.NODE_ENV === 'development',
+                PROD: process.env.NODE_ENV !== 'development',
+            }),
+        },
     });
 
     if (!esResult.outputFiles?.[0]) {

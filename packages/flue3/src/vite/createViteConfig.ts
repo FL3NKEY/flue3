@@ -120,7 +120,8 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             FLUE3_BASE_PATH: JSON.stringify(config.basePath),
         },
         configFile: false,
-        envFile: false,
+        envPrefix: 'APP_',
+        envDir: WORKDIR,
         appType: 'custom',
         server: {
             middlewareMode: true,

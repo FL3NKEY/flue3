@@ -36,7 +36,6 @@
         "mri": "1.2.0",
         "mustache": "4.2.0",
         "node-fetch": "3.3.0",
-        "rollup-plugin-progress": "1.1.2",
         "sass": "1.56.1",
         "serialize-error": "11.0.0",
         "serve-static": "1.15.0",
@@ -48,7 +47,6 @@
         "@types/fs-extra": "11.0.1",
         "@types/http-proxy": "1.17.9",
         "@types/mustache": "4.2.2",
-        "@types/rollup-plugin-progress": "^1.1.1",
         "@types/serve-static": "1.15.0"
     },
     "engines": {
