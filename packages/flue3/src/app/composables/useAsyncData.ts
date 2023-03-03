@@ -1,7 +1,5 @@
 import {
     computed,
-    ComputedRef,
-    Ref,
     toRef,
     reactive,
     watch,
@@ -9,38 +7,28 @@ import {
     onMounted,
 } from 'vue';
 import { useAppContext } from './useAppContext.js';
-import { AppContext } from '../../types/AppContext.js';
 import { serializeError } from 'serialize-error';
 import { isAppError } from '../../utils/error.js';
-
-type AsyncDataHandler<T> = (appContext: AppContext) => Promise<T> | T;
-type loadFn = () => Promise<void>;
-
-interface AsyncDataOptions<T> {
-    lazy?: boolean;
-    immediate?: boolean;
-    initialValue?: () => T;
-}
-
-interface AsyncDataState<T> {
-    serverPrefetched: boolean;
-    data: T;
-    pending: boolean;
-    error: unknown;
-}
-
-interface AsyncDataReturnBody<T> {
-    data: Ref<T>;
-    pending: ComputedRef<boolean>;
-    error: ComputedRef<unknown>;
-    load: loadFn;
-    refresh: loadFn;
-}
-
-type AsyncDataReturn<T> = Promise<AsyncDataReturnBody<T>> | AsyncDataReturnBody<T>;
+import {
+    AsyncDataHandler,
+    AsyncDataOptions,
+    AsyncDataReturn,
+    AsyncDataReturnBody,
+    AsyncDataState,
+} from '../../types/AsyncData.js';
 
 export const getAsyncDataStateKey = (key: string) => `$asyncData.${key}`;
 
+export function useAsyncData <T>(
+    key: string,
+    handler: AsyncDataHandler<T>,
+    options?: AsyncDataOptions<T> & { immediate: true } | { lazy: false },
+): Promise<AsyncDataReturnBody<T>>;
+export function useAsyncData <T>(
+    key: string,
+    handler: AsyncDataHandler<T>,
+    options?: AsyncDataOptions<T> & { immediate: false } | { lazy: true },
+): AsyncDataReturnBody<T>;
 export function useAsyncData <T>(
     key: string,
     handler: AsyncDataHandler<T>,
