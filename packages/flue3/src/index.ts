@@ -7,7 +7,7 @@ export { defineServerPlugin } from './defines/defineServerPlugin.js';
 
 export { createApp } from './app/createApp.js';
 export { useAppContext } from './app/composables/useAppContext.js';
-export { useState, getStateKey } from './app/composables/useState.js';
+export { useState } from './app/composables/useState.js';
 export { useCookie } from './app/composables/useCookie.js';
 export { useAsyncData, getAsyncDataStateKey } from './app/composables/useAsyncData.js';
 export { useLazyAsyncData } from './app/composables/useLazyAsyncData.js';

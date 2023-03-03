@@ -7,10 +7,8 @@ import {
 } from 'vue';
 import { useAppContext } from './useAppContext.js';
 
-export const getStateKey = (key: string) => `$state.${key}`;
-
 export const useState = <T>(key: string, initialValue?: () => T): Ref<T> => {
-    const stateKey = getStateKey(key);
+    const stateKey = key;
     const appContext = useAppContext();
 
     let initialRefValue: T;
