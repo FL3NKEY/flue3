@@ -1,11 +1,3 @@
-# `head`
+# @flue3/router
 
-> TODO: description
-
-## Usage
-
-```
-const head = require('router');
-
-// TODO: DEMONSTRATE API
-```
+Full documentation: [flue3.fl3nkey.com](https://flue3.fl3nkey.com/)

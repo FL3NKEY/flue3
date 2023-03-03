@@ -24,6 +24,28 @@ export default defineConfig({
 
 Идентификатор приложения. Используется в основном для генирации уникальных DOM-узлов.
 
+## appConfig
+
+Тип: `object`<br>
+Значение по умлочанию: `{}`
+
+Ваш объект конфигурации приложения. Здесь можно хранить некоторые данные, которые будут доступны в контексте приложения.
+
+::: warning Предупреждение
+Не храните приватные данные в этом объекте! Так как эти данные хранятся и на клиенте, каждый пользователь может их просмотреть.
+:::
+
+`flue3.config.ts`
+```typescript
+import { defineConfig } from 'flue3';
+
+export default defineConfig({
+    appConfig: {
+        myPublicToken: 'token_value',
+    }
+});
+```
+
 ## basePath
 
 Тип: `string`<br>
@@ -73,20 +95,65 @@ export default defineConfig({
 
 Путь и название файла для входной точки приложения на стороне сервера. Работает только в режиме SSR.
 
+## headTemplateFilename
+Тип: `string | boolean`<br>
+Значение по умолчанию: `false`
+
+Путь до шаблоны, который будет имплементирован в `<head>` основного шаблона. Файл должен быть с расширением `.html`.
+
+`flue3.config.ts`
+```typescript
+import { defineConfig } from 'flue3';
+
+export default defineConfig({
+    headTemplateFilename: './head.html',
+});
+```
+
+`src/head.html`
+```html
+<title>My app</title>
+<!--[Здесь так же доступна шаблонизация с помощью mustache]-->
+<meta name="token" content="{{ appConfig.myPublicToken }}">
+```
+
 ## loadingTemplateFilename
 Тип: `string | boolean`<br>
 Значение по умолчанию: `false`
 
 Путь до шаблоны с идникатором загрузки в режиме SPA. Файл должен быть с расширением `.html`. Это шаблон появляется при первой отрисовки, когда ещё приложение не готово.
 
+`flue3.config.ts`
+```typescript
+import { defineConfig } from 'flue3';
+
+export default defineConfig({
+    loadingTemplateFilename: './loading.html',
+});
+```
+
+`src/loading.html`
+```html
+<style>
+    .loading {
+        color: red;
+    }
+</style>
+
+<div class="loading">...</div>
+
+<!--[Здесь так же доступна шаблонизация с помощью mustache]-->
+<div>{{ appConfig.myData }}</div>
+```
+
 ## srcPath
-Тип: `string |`<br>
+Тип: `string`<br>
 Значение по умолчанию: `'src'`
 
 Название директории с исходниками.
 
 ## outputPath
-Тип: `string |`<br>
+Тип: `string`<br>
 Значение по умолчанию: `'dist'`
 
 Название директории, куда попадёт итоговый бандл после сборки.
@@ -142,6 +209,8 @@ export default defineConfig({
         hostname: '0.0.0.0',
         port: 3000,
         proxies: {},
+        plugins: [],
+        middleware: [],
     }
 });
 ```
@@ -187,3 +256,60 @@ export default defineConfig({
 ```
 
 Теперь при обращении `/api/*` все запросы будут переадрисовываться на `http://jsonplaceholder.typicode.com`.
+
+## server.plugins
+Тип: `string[]`<br>
+Значение по умолчанию: `[]`
+
+Плагины приложения на стороне сервера. Представляет из себя массив путей к модулям.
+
+`flue3.config.ts`
+```typescript
+import {defineConfig} from 'flue3';
+
+export default defineConfig({
+    server: {
+        plugins: ['@/server/plugins/myServerPlugin.ts'],
+    }
+});
+```
+
+`src/server/plugins/myServerPlugin.ts`
+
+```typescript
+import { defineServerPlugin } from 'flue3';
+
+export default defineServerPlugin(async (appContext) => {
+    // логика серверного плагина...
+});
+```
+
+## server.middleware
+Тип: `object[]`<br>
+Значение по умолчанию: `[]`
+
+Серверные middleware, позволяют выполнять код на каждый GET HTTP запрос по указанному пути.
+
+`flue3.config.ts`
+```typescript
+import { defineConfig } from 'flue3';
+
+export default defineConfig({
+    server: {
+        middleware: [{
+            path: '*',
+            handler: '@/server/middleware/myServerMiddleware.ts',
+        }],
+    }
+});
+```
+
+`src/server/middleware/myServerMiddleware.ts`
+
+```typescript
+import { defineServerMiddleware } from 'flue3';
+
+export default defineServerMiddleware((appConfig) => (h3Event) => {
+    // логика серверного middleware...
+});
+```

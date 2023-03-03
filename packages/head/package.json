@@ -4,7 +4,7 @@
     "description": "flue3 <head> tag manager plugin",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
-    "license": "ISC",
+    "license": "MIT",
     "main": "lib/head.js",
     "type": "module",
     "scripts": {

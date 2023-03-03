@@ -6,8 +6,11 @@ import { AppResponse, AppWriteResponse } from './AppResponse.js';
 import { Cookie } from './Cookie.js';
 import { Hookable } from 'hookable';
 import { AppHooks } from './AppHooks.js';
+import { Config } from './Config.js';
 
 export interface AppContext extends Record<string, any> {
+    basePath: string;
+    config: Config['appConfig'];
     vueApp: App;
     isClient: boolean;
     isServer: boolean;

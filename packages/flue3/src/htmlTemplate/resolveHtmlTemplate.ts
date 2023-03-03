@@ -2,10 +2,13 @@ import fs from 'fs-extra';
 import path from 'path';
 import { WORKDIR, TEMPLATES_PATH } from '../constants/constants.js';
 import {
-    htmlImplementSPALoading,
+    htmlTemplateImplementHead,
+    htmlTemplateImplementSPALoading,
     htmlTemplateImplementAppId,
     htmlTemplateImplementEntrypoint,
 } from './htmlTemplateImplements.js';
+import { Config } from '../types/Config.js';
+import mustache from 'mustache';
 
 export const resolveHtmlTemplatePath = (ssr: boolean) => {
     return path.resolve(TEMPLATES_PATH, ssr ? 'index.ssr.html' : 'index.spa.html');
@@ -22,17 +25,21 @@ export const resolveLoadingTemplatePath = (src: string, file: string) => {
 };
 
 export const resolveHtmlTemplate = ({
+    appConfig,
     ssr,
     appId,
     srcPath,
     entryFilename,
     loadingTemplateFilename,
+    headTemplateFilename,
 }: {
+    appConfig: Config['appConfig'];
     ssr: boolean;
     appId: string;
     srcPath: string;
     entryFilename: string;
     loadingTemplateFilename: string | false;
+    headTemplateFilename: string | false;
 }) => {
     let template = fs.readFileSync(
         resolveHtmlTemplatePath(ssr),
@@ -42,17 +49,29 @@ export const resolveHtmlTemplate = ({
     template = htmlTemplateImplementAppId(template, appId);
     template = htmlTemplateImplementEntrypoint(template, entryFilename);
 
+    if (headTemplateFilename) {
+        const headTemplate = fs.readFileSync(
+            resolveLoadingTemplatePath(srcPath, headTemplateFilename),
+            'utf-8',
+        );
+        template = htmlTemplateImplementHead(template, headTemplate);
+    } else {
+        template = htmlTemplateImplementHead(template, '');
+    }
+
     if (!ssr) {
         if (loadingTemplateFilename) {
             const loadingTemplate = fs.readFileSync(
                 resolveLoadingTemplatePath(srcPath, loadingTemplateFilename),
                 'utf-8',
             );
-            template = htmlImplementSPALoading(template, loadingTemplate);
+            template = htmlTemplateImplementSPALoading(template, loadingTemplate);
         } else {
-            template = htmlImplementSPALoading(template, '');
+            template = htmlTemplateImplementSPALoading(template, '');
         }
     }
 
-    return template;
+    return mustache.render(template, {
+        appConfig,
+    });
 };

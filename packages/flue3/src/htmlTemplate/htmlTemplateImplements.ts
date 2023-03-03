@@ -59,8 +59,12 @@ export const htmlTemplateImplementInitialState = (template: string, initialState
     );
 };
 
-export const htmlImplementSPALoading = (template: string, loadingSource: string) => {
+export const htmlTemplateImplementSPALoading = (template: string, loadingSource: string) => {
     return template.replace('<!--#_FLUE3_SPA_LOADING-->', loadingSource);
+};
+
+export const htmlTemplateImplementHead = (template: string, headSource: string) => {
+    return template.replace('<!--#_FLUE3_HEAD-->', headSource);
 };
 
 export const htmlTemplateImplementSSR = (source: string, {

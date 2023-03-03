@@ -7,6 +7,7 @@ import { resolveHtmlTemplate } from '../htmlTemplate/resolveHtmlTemplate.js';
 import type { createUniversalEntry } from '../app/entryServer.js';
 import { WORKDIR } from '../constants/constants.js';
 import path from 'path';
+import { ServerMiddlewareRecord, ServerMiddleware } from '../types/ServerMiddleware.js';
 
 type CreateUniversalEntry = ReturnType<typeof createUniversalEntry>;
 
@@ -16,8 +17,43 @@ export const dev = async (configOverwrites?: Config) => {
     const vite = await createViteServer(viteConfig);
     const appEntryPath = path.join(WORKDIR, config.srcPath, config.entryFilename);
     const appServerEntryPath = path.join(WORKDIR, config.srcPath, config.entryServerFilename);
+    const serverMiddlewares: ServerMiddlewareRecord[] = [];
+    const resolvedServerMiddlewaresUrls: Awaited<ReturnType<typeof vite.moduleGraph.resolveUrl>>[] = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const { path, handler } of config.server.middleware) {
+        const handlerModule = await vite.ssrLoadModule(handler);
+        const handlerFn = (handlerModule.default ?? handlerModule) as ServerMiddleware;
+
+        serverMiddlewares.push({
+            path,
+            handler: handlerFn(config.appConfig),
+        });
+
+        resolvedServerMiddlewaresUrls.push(await vite.moduleGraph.resolveUrl(appEntryPath));
+    }
+
+    // watch for server middleware
+    vite.watcher.on('change', async (filePath) => {
+        if (resolvedServerMiddlewaresUrls.some((resolvedUrl) => resolvedUrl.includes(filePath))) {
+            return;
+        }
+
+        const resolvedUrl = await vite.moduleGraph.resolveUrl(filePath);
+        const mod = await vite.moduleGraph.getModuleById(resolvedUrl[0]);
+
+        if (!mod) {
+            return;
+        }
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const importedModule of mod.importedModules) {
+            await vite.reloadModule(importedModule);
+        }
+    });
 
     if (config.ssr) {
+        // watch for server entry file
         vite.watcher.on('change', async (filePath) => {
             if (!filePath.startsWith(appServerEntryPath)) {
                 return;
@@ -49,7 +85,7 @@ export const dev = async (configOverwrites?: Config) => {
         port: config.server.port,
         ssrEntrypointLoader,
         htmlTemplate,
-        middlewares: [vite.middlewares],
+        middlewares: [vite.middlewares, ...serverMiddlewares],
         proxies: config.server.proxies,
         vite,
         entrypointFilePath: appEntryPath,

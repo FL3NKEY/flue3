@@ -1,4 +1,4 @@
 import { RuntimeConfig } from '../types/RuntimeConfig.js';
 
-/* for TypeScript */
-export declare const runtimeConfig: RuntimeConfig;
+/* for TypeScript, use 'virtual:flue3RuntimeConfig' */
+export const runtimeConfig = {} as RuntimeConfig;

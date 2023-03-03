@@ -12,6 +12,12 @@ title: 'Контекст'
 
 Контекст **Vue** приложения.
 
+## config
+
+Тип: `readonly object`
+
+Объект конфигурации `appConfig`, который определён в [файле конфигурации](/guide/config).
+
 ## isClient
 
 Тип: `boolean`

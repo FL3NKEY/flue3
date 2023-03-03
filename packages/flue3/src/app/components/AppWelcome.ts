@@ -37,11 +37,11 @@ export default defineComponent({
                 style: `
                         position: absolute;
                         width: 100%;
-                        height: 50%;
+                        height: 100%;
                         border-radius: 100%;
                         background: linear-gradient(122.97deg, rgb(52, 254, 206) 0.74%, rgb(91, 103, 227) 100.61%), rgb(217, 217, 217);
                         opacity: 0.5;
-                        filter: blur(80px);
+                        filter: blur(200px);
                         z-index: -1;
                 `,
             }),

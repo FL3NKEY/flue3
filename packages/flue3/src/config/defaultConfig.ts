@@ -7,6 +7,7 @@ export const defaultConfig: Config = {
     entryClientFilename: './entryClient',
     entryServerFilename: './entryServer',
     loadingTemplateFilename: false,
+    headTemplateFilename: false,
     srcPath: 'src',
     outputPath: 'dist',
     mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
@@ -18,5 +19,8 @@ export const defaultConfig: Config = {
         hostname: '0.0.0.0',
         port: 3000,
         proxies: {},
+        middleware: [],
+        plugins: [],
     },
+    appConfig: {},
 };

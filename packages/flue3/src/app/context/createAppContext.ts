@@ -4,9 +4,12 @@ import { AppErrorState } from '../../types/AppError.js';
 import { clientExternalRedirect } from '../../utils/clientExternalRedirect.js';
 import { Hookable } from 'hookable';
 import { AppHooks } from '../../types/AppHooks.js';
+import { appConfig } from 'virtual:flue3AppConfig';
 
 export const createAppContext = (): AppContext => {
     return {
+        basePath: FLUE3_BASE_PATH,
+        config: appConfig,
         vueApp: {} as App,
         isClient: !import.meta.env.SSR,
         isServer: import.meta.env.SSR,

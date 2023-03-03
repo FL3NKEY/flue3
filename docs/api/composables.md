@@ -19,6 +19,23 @@ const appContext = useAppContext();
 </script>
 ```
 
+## useAppConfig
+
+Тип:
+```typescript
+function useAppConfig(): AppContext['config']
+```
+
+Функция, которая возвращает объект конфигурации `appConfig`, который определён в [файле конфигурации](/guide/config).
+
+```vue
+<script lang="ts" setup>
+import { useAppConfig } from 'flue3';
+
+const appConfig = useAppConfig();
+</script>
+```
+
 ## useCookie
 
 Тип:

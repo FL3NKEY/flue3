@@ -1,11 +1,3 @@
-# `head`
+# @flue3/head
 
-> TODO: description
-
-## Usage
-
-```
-const head = require('head');
-
-// TODO: DEMONSTRATE API
-```
+Full documentation: [flue3.fl3nkey.com](https://flue3.fl3nkey.com/)

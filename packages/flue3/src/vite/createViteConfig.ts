@@ -1,10 +1,9 @@
 import { Config } from '../types/Config.js';
-import { InlineConfig, Plugin } from 'vite';
+import { InlineConfig } from 'vite';
 import vuePlugin from '@vitejs/plugin-vue';
 import path from 'path';
 import { WORKDIR, APP_PATH } from '../constants/constants.js';
 import { frameworkVitePlugin } from './frameworkVitePlugin.js';
-import progressPlugin from 'rollup-plugin-progress';
 
 const builtInModules = [
     'assert',
@@ -84,23 +83,20 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             copyPublicDir: false,
         },
         publicDir: 'public',
-        plugins: [
-            frameworkVitePlugin(config, {
-                target,
-                srcFullPath,
-                appEntryFullPath,
-                appEntryClientFullPath,
-                appEntryServerFullPath,
-                vHtmlPath,
-                srcPublicFullPath,
-                outDirFullPath,
-                outAssetsDir,
-                outAssetsDirFullPath,
-                outPublicFullPath,
-            }),
-            vuePlugin(),
-            progressPlugin() as Plugin,
-        ],
+        plugins: [frameworkVitePlugin(config, {
+            target,
+            srcFullPath,
+            appEntryFullPath,
+            appEntryClientFullPath,
+            appEntryServerFullPath,
+            vHtmlPath,
+            srcPublicFullPath,
+            outDirFullPath,
+            outAssetsDir,
+            outAssetsDirFullPath,
+            outPublicFullPath,
+        }),
+        vuePlugin()],
         ssr: {
             noExternal: [...ssrNoExternalPattern],
         },
@@ -121,7 +117,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
         define: {
             FLUE3_APP_ID: JSON.stringify(config.appId),
             FLUE3_SSR_ENABLED: config.ssr,
-            FLUE3_BASE_URL: JSON.stringify(config.basePath),
+            FLUE3_BASE_PATH: JSON.stringify(config.basePath),
         },
         configFile: false,
         envFile: false,

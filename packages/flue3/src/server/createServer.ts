@@ -41,7 +41,13 @@ export const createServer = async ({
     const app = createH3App();
 
     if (middlewares && middlewares.length) {
-        middlewares.forEach((middleware) => app.use(fromNodeMiddleware(middleware)));
+        middlewares.forEach((middleware) => {
+            if ('path' in middleware) {
+                app.use(middleware.path, eventHandler(middleware.handler));
+            } else {
+                app.use(fromNodeMiddleware(middleware));
+            }
+        });
     }
 
     if (publicPath) {
@@ -139,6 +145,7 @@ export const createServer = async ({
             }
 
             template = htmlTemplateImplementSSR(template, renderedPartials);
+            await context.appContext.hooks.callHook('render:template', template);
         }
 
         return template;

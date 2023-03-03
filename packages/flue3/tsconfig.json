@@ -11,6 +11,9 @@
             "#_FLUE3_APP_TARGET_ENTRY": ["./universalEntry/universalEntry.ts"],
             "#_FLUE3_APP_SSR_ENTRY": ["./app/entryServer.ts"],
             "virtual:flue3RuntimeConfig": ["./runtimeConfig/runtimeConfig.ts"],
+            "virtual:flue3AppConfig": ["./app/config/appConfig.ts"],
+            "virtual:flue3ServerMiddlewareImports": ["./serverMiddleware/serverMiddlewareImports.ts"],
+            "virtual:flue3ServerPluginImports": ["./serverPlugins/serverPluginImports.ts"]
         },
         "noEmit": false,
         "types": [

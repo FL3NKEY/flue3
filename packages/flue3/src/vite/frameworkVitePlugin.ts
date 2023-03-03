@@ -20,10 +20,16 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
     outAssetsDirFullPath: string;
     outPublicFullPath: string;
 }): Plugin => {
+    const vAppConfig = 'virtual:flue3AppConfig';
     const vRuntimeConfig = 'virtual:flue3RuntimeConfig';
     const vFallbackFn = 'virtual:flue3FnFallback';
+    const vServerMiddlewareImports = 'virtual:flue3ServerMiddlewareImports';
+    const vServerPluginImports = 'virtual:flue3ServerPluginImports';
+    const resolvedVAppConfig = '\0' + vAppConfig;
     const resolvedVRuntimeConfig = '\0' + vRuntimeConfig;
     const resolvedVFallbackFn = '\0' + vFallbackFn;
+    const resolvedVServerMiddlewareImports = '\0' + vServerMiddlewareImports;
+    const resolvedVServerPluginImports = '\0' + vServerPluginImports;
 
     let viteCommand: 'build' | 'serve' = 'build';
     let isVHtml = false;
@@ -76,16 +82,25 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                 }
             }
 
-            if (id === vRuntimeConfig) {
+            switch (id) {
+            case vRuntimeConfig:
                 return resolvedVRuntimeConfig;
+            case vAppConfig:
+                return resolvedVAppConfig;
+            case vServerMiddlewareImports:
+                return resolvedVServerMiddlewareImports;
+            case vServerPluginImports:
+                return resolvedVServerPluginImports;
+            default:
             }
         },
         // eslint-disable-next-line consistent-return
-        load(id) {
+        async load(id) {
             if (id === resolvedVRuntimeConfig) {
                 const runtimeConfig: RuntimeConfig = {
                     basePath: config.basePath,
                     server: config.server,
+                    appConfig: config.appConfig,
                 };
 
                 return `export const runtimeConfig = ${JSON.stringify(runtimeConfig)}`;
@@ -93,6 +108,24 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                 if (!fs.existsSync(id)) {
                     return 'export default () => {}';
                 }
+            } if (id === resolvedVAppConfig) {
+                return `export const appConfig = ${JSON.stringify(config.appConfig)}`;
+            } if (id === resolvedVServerMiddlewareImports) {
+                let imports = '';
+
+                config.server.middleware.forEach(({ handler }) => {
+                    imports += `'${handler}': () => import('${handler}'),`;
+                });
+
+                return `export const serverMiddlewareImports = {${imports}}`;
+            } if (id === resolvedVServerPluginImports) {
+                const imports: string[] = [];
+
+                config.server.plugins.forEach((handler) => {
+                    imports.push(`() => import('${handler}')`);
+                });
+
+                return `export const serverPluginImports = [${imports.join(',')}]`;
             }
         },
         async writeBundle() {

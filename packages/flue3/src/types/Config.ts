@@ -1,6 +1,11 @@
 import { DeepPartial } from './DeepPartial.js';
 import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
 
+interface ServerMiddlewareRecord {
+    path: string;
+    handler: string;
+}
+
 export interface Config {
     appId: string;
     basePath: string;
@@ -8,6 +13,7 @@ export interface Config {
     entryClientFilename: string;
     entryServerFilename: string;
     loadingTemplateFilename: string | false;
+    headTemplateFilename: string | false;
     srcPath: string;
     outputPath: string;
     mode: 'production' | 'development';
@@ -19,7 +25,10 @@ export interface Config {
         hostname: string;
         port: number;
         proxies: Record<string, HTTPProxyOptions | string>;
+        middleware: ServerMiddlewareRecord[];
+        plugins: string[];
     };
+    appConfig: Record<string, any>;
 }
 
 export type ConfigDraft = DeepPartial<Config>;

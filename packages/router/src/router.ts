@@ -39,7 +39,8 @@ export const createRouterPlugin = definePlugin(async (
     const router = createRouter({
         routes: [...parseRoutesRecordToRaw(routes), ...pluginRoutes],
         scrollBehavior: options.scrollBehavior,
-        history: appContext.isServer ? createMemoryHistory() : createWebHistory(),
+        history: appContext.isServer
+            ? createMemoryHistory(appContext.basePath) : createWebHistory(appContext.basePath),
     });
 
     inject('router', router);

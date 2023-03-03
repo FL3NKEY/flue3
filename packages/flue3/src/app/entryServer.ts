@@ -13,6 +13,7 @@ import { H3Event } from 'h3';
 import { implementAppInjector } from './inject/implementAppInjector.js';
 import { renderPreloadLinks } from '../utils/preloadLinks.js';
 import entryServer from '#_FLUE3_APP_TARGET_ENTRY';
+import { createServerPlugins } from './plugins/createServerPlugins.js';
 
 export const createUniversalEntry = (
     App: Component,
@@ -43,6 +44,7 @@ export const createUniversalEntry = (
             const { redirectDefer } = createAndImplementServerResponse(context.appContext);
 
             await Promise.race([createApp(context), redirectDefer.promise]);
+            await createServerPlugins(context.appContext);
             await context.appContext.hooks.callHook('app:created');
             if (context.appContext.isRedirected()) return undefined;
 
