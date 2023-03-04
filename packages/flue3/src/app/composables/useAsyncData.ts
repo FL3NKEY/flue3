@@ -63,8 +63,12 @@ export function useAsyncData <T>(
     const pending = computed(() => asyncDataState.pending);
     const error = computed(() => asyncDataState.error);
 
-    const load = async () => {
+    const load = async (once = true) => {
         try {
+            if (once && appContext.isClient && asyncDataState.serverPrefetched) {
+                return;
+            }
+
             asyncDataState.pending = true;
             asyncDataState.data = await handler(appContext);
             asyncDataState.error = undefined;
@@ -87,6 +91,8 @@ export function useAsyncData <T>(
         }
     };
 
+    const refresh = () => load(false);
+
     if (appContext.isServer) {
         watch(asyncDataState, (newState) => {
             appContext.writeState(asyncDataStateKey, {
@@ -101,7 +107,7 @@ export function useAsyncData <T>(
         pending,
         error,
         load,
-        refresh: load,
+        refresh,
     };
 
     if (isImmediate) {
@@ -111,11 +117,7 @@ export function useAsyncData <T>(
             });
         } else {
             return new Promise(async (resolve) => {
-                if ((appContext.isServer && !isLazy)
-                    || (appContext.isClient && !asyncDataState.serverPrefetched)) {
-                    await load();
-                }
-
+                await load();
                 resolve(returns);
             });
         }
