@@ -30,10 +30,12 @@ export const dev = async (configOverwrites?: Config) => {
             handler: handlerFn(config.appConfig),
         });
 
-        resolvedServerMiddlewaresUrls.push(await vite.moduleGraph.resolveUrl(appEntryPath));
+        resolvedServerMiddlewaresUrls.push(await vite.moduleGraph.resolveUrl(handler));
     }
 
     // watch for server middleware
+    /*
+     * @todo restart server when middleware change
     vite.watcher.on('change', async (filePath) => {
         if (resolvedServerMiddlewaresUrls.some((resolvedUrl) => resolvedUrl.includes(filePath))) {
             return;
@@ -46,11 +48,9 @@ export const dev = async (configOverwrites?: Config) => {
             return;
         }
 
-        // eslint-disable-next-line no-restricted-syntax
-        for (const importedModule of mod.importedModules) {
-            await vite.reloadModule(importedModule);
-        }
+        // restart server
     });
+    */
 
     if (config.ssr) {
         // watch for server entry file
