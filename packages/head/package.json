@@ -1,6 +1,6 @@
 {
     "name": "@flue3/head",
-    "version": "0.1.8-dev.0",
+    "version": "0.1.9-dev.0",
     "description": "flue3 <head> tag manager plugin",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -22,7 +22,7 @@
         "@vueuse/head": "1.0.16"
     },
     "devDependencies": {
-        "flue3": "^0.1.8-dev.0"
+        "flue3": "^0.1.9-dev.0"
     },
     "publishConfig": {
         "access": "public",
