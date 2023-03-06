@@ -20,7 +20,7 @@ export const createUniversalEntry = (
     options: CreateAppOptions,
     createApp: CreateApp,
 ) => {
-    return (serverEvent: H3Event, manifest?: SSRManifest) => {
+    return (serverEvent: H3Event, ssrManifest?: SSRManifest) => {
         const context = createFrameworkContext();
 
         const render = async (beforeRender?: () => void): Promise<SSRRenderReturns | undefined> => {
@@ -59,8 +59,8 @@ export const createUniversalEntry = (
             renderPartials.body += await renderToString(context.appContext.vueApp, context.ssrContext);
             if (context.appContext.isRedirected()) return undefined;
 
-            if (manifest) {
-                renderPartials.headTags += renderPreloadLinks(context.ssrContext.modules, manifest);
+            if (ssrManifest) {
+                renderPartials.headTags += renderPreloadLinks(context.ssrContext.modules, ssrManifest);
             }
 
             renderPartials.teleports = {
@@ -94,4 +94,4 @@ export const createUniversalEntry = (
 
 /* for TypeScript */
 // eslint-disable-next-line
-export default ((serverEvent, manifest?) => {}) as ReturnType<typeof createUniversalEntry>;
+export default ((serverEvent, ssrManifest?) => {}) as ReturnType<typeof createUniversalEntry>;

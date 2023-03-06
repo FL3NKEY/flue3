@@ -21,19 +21,19 @@ export const renderPreloadLink = (file: string) => {
     return '';
 };
 
-export const renderPreloadLinks = (modules: Set<string>, manifest: SSRManifest) => {
+export const renderPreloadLinks = (modules: Set<string>, ssrManifest: SSRManifest) => {
     let links = '';
     const seen = new Set<string>();
     modules.forEach((id) => {
-        const files = manifest[id];
+        const files = ssrManifest[id];
         if (files) {
             files.forEach((file) => {
                 if (!seen.has(file)) {
                     seen.add(file);
                     const filename = path.basename(file);
-                    if (manifest[filename]) {
+                    if (ssrManifest[filename]) {
                         // eslint-disable-next-line no-restricted-syntax
-                        for (const depFile of manifest[filename]) {
+                        for (const depFile of ssrManifest[filename]) {
                             links += renderPreloadLink(depFile);
                             seen.add(depFile);
                         }

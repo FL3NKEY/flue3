@@ -61,6 +61,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
         root: srcFullPath,
         base: config.basePath,
         build: {
+            manifest: config.ssr && target === 'client' ? true : undefined,
             ssrManifest: config.ssr && target === 'client' ? true : undefined,
             outDir: outDirFullPath,
             emptyOutDir: true,
@@ -95,6 +96,7 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             outAssetsDir,
             outAssetsDirFullPath,
             outPublicFullPath,
+            basePath: config.basePath,
         }),
         vuePlugin()],
         ssr: {

@@ -27,7 +27,7 @@ export const createServer = async ({
     htmlTemplate,
     proxies,
     middlewares,
-    manifest,
+    ssrManifest,
     publicPath,
     vite,
     entrypointFilePath,
@@ -115,7 +115,7 @@ export const createServer = async ({
                 render,
                 renderError,
                 context,
-            } = currentSsrEntrypoint(event, manifest);
+            } = currentSsrEntrypoint(event, ssrManifest);
 
             let renderedPartials;
 

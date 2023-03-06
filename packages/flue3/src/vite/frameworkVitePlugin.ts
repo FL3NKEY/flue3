@@ -1,4 +1,4 @@
-import { Plugin } from 'vite';
+import { Plugin, Manifest } from 'vite';
 import fs from 'fs-extra';
 import { resolveHtmlTemplate } from '../htmlTemplate/resolveHtmlTemplate.js';
 import { Config } from '../types/Config.js';
@@ -6,6 +6,8 @@ import { RuntimeConfig } from '../types/RuntimeConfig.js';
 import { copyFiles } from '../utils/copyFiles.js';
 import path from 'path';
 import { APP_PATH } from '../constants/constants.js';
+import { SSRManifest } from '../types/SSRManifest.js';
+import { ssrManifestImplementCssImportsCollision } from '../utils/ssrManifest.js';
 
 export const frameworkVitePlugin = (config: Config, pluginConfig: {
     target: 'server' | 'client';
@@ -19,6 +21,7 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
     outAssetsDir: string;
     outAssetsDirFullPath: string;
     outPublicFullPath: string;
+    basePath: string;
 }): Plugin => {
     const vAppConfig = 'virtual:flue3AppConfig';
     const vRuntimeConfig = 'virtual:flue3RuntimeConfig';
@@ -161,6 +164,20 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
                         });
                     } catch {}
                 }
+            }
+
+            const manifestPath = path.join(pluginConfig.outDirFullPath, 'manifest.json');
+            const ssrManifestPath = path.join(pluginConfig.outDirFullPath, 'ssr-manifest.json');
+
+            if (fs.existsSync(manifestPath) && fs.existsSync(ssrManifestPath)) {
+                const manifest: Manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+                const ssrManifest: SSRManifest = JSON.parse(fs.readFileSync(ssrManifestPath, 'utf-8'));
+
+                ssrManifestImplementCssImportsCollision(ssrManifest, manifest, pluginConfig.basePath);
+
+                fs.writeFileSync(ssrManifestPath, JSON.stringify(ssrManifest), {
+                    encoding: 'utf-8',
+                });
             }
         },
     };

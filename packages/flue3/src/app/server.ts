@@ -16,7 +16,7 @@ const publicPath = path.join(distPath, 'client/public');
 
 (async () => {
     const htmlTemplate = await fsp.readFile(htmlTemplatePath, 'utf-8');
-    const manifest: SSRManifest = JSON.parse(await fsp.readFile(ssrManifestPath, 'utf-8'));
+    const ssrManifest: SSRManifest = JSON.parse(await fsp.readFile(ssrManifestPath, 'utf-8'));
     const serverMiddlewares: ServerMiddlewareRecord[] = [];
 
     // eslint-disable-next-line no-restricted-syntax
@@ -39,7 +39,7 @@ const publicPath = path.join(distPath, 'client/public');
         proxies: runtimeConfig.server.proxies,
         ssrEntrypoint,
         htmlTemplate,
-        manifest,
+        ssrManifest,
         middlewares: [...serverMiddlewares],
         publicPath: ['/', publicPath],
     });

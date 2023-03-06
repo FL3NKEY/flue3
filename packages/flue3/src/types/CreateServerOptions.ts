@@ -16,7 +16,7 @@ export interface CreateServerOptions {
     htmlTemplate: ((url: string) => Promise<string>) | string;
     proxies?: Record<string, HTTPProxyOptions | string>;
     middlewares?: Array<NodeMiddleware | ServerMiddlewareRecord>;
-    manifest?: SSRManifest;
+    ssrManifest?: SSRManifest;
     publicPath?: [string, string];
     vite?: ViteDevServer;
     entrypointFilePath?: string;
