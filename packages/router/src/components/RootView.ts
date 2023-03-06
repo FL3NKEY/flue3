@@ -24,7 +24,7 @@ export default defineComponent({
 
         const Root = () => {
             return h(RouterView, ({ Component: ViewComponent }: { Component: Component }) => {
-                return h(Suspense, () => Layout(ViewComponent ? h(ViewComponent) : undefined));
+                return h(Suspense, () => Layout(h(Suspense, () => h(ViewComponent))));
             });
         };
 
