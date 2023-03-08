@@ -47,7 +47,7 @@ export const resolveHtmlTemplate = ({
     );
 
     template = htmlTemplateImplementAppId(template, appId);
-    template = htmlTemplateImplementEntrypoint(template, entryFilename);
+    template = htmlTemplateImplementEntrypoint(template, path.join('/', entryFilename));
 
     if (headTemplateFilename) {
         const headTemplate = fs.readFileSync(

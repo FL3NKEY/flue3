@@ -3,7 +3,7 @@ import path from 'path';
 
 export const renderPreloadLink = (file: string) => {
     if (file.endsWith('.js')) {
-        return `<link rel="modulepreload" crossorigin href="${file}">`;
+        return `<link rel="modulepreload" as="script" crossorigin href="${file}">`;
     } if (file.endsWith('.css')) {
         return `<link rel="stylesheet" href="${file}">`;
     } if (file.endsWith('.woff')) {
