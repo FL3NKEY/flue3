@@ -45,7 +45,7 @@ export const createServer = async ({
     if (middlewares && middlewares.length) {
         middlewares.forEach((middleware) => {
             if ('path' in middleware) {
-                app.use(middleware.path, eventHandler(middleware.handler));
+                app.use(middleware.path, middleware.handler);
             } else {
                 app.use(fromNodeMiddleware(middleware));
             }

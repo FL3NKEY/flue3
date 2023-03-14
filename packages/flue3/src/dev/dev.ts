@@ -27,7 +27,7 @@ export const dev = async (configOverwrites?: Config) => {
 
         serverMiddlewares.push({
             path,
-            handler: handlerFn(config.appConfig),
+            handler: handlerFn,
         });
 
         resolvedServerMiddlewaresUrls.push(await vite.moduleGraph.resolveUrl(handler));

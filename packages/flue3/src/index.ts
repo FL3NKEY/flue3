@@ -1,8 +1,8 @@
-export { definePlugin } from './defines/definePlugin.js';
+export { definePlugin, defineStandalonePlugin } from './defines/definePlugin.js';
 export { defineConfig } from './defines/defineConfig.js';
 export { defineMiddleware } from './defines/defineMiddleware.js';
 export { defineEntry } from './defines/defineEntry.js';
-export { defineServerMiddleware } from './defines/defineServerMiddleware.js';
+export { defineServerMiddleware, defineServerNodeMiddleware } from './defines/defineServerMiddleware.js';
 export { defineServerPlugin } from './defines/defineServerPlugin.js';
 
 export { createApp } from './app/createApp.js';

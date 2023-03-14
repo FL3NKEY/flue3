@@ -26,7 +26,7 @@ const publicPath = path.join(distPath, 'client/public');
 
         serverMiddlewares.push({
             path,
-            handler: handlerFn(runtimeConfig.appConfig),
+            handler: handlerFn,
         });
     }
 
