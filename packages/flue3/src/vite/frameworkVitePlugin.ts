@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import { resolveHtmlTemplate } from '../htmlTemplate/resolveHtmlTemplate.js';
 import { Config } from '../types/Config.js';
 import { RuntimeConfig } from '../types/RuntimeConfig.js';
-import { copyFiles } from '../utils/copyFiles.js';
 import path from 'path';
 import { APP_PATH } from '../constants/constants.js';
 import { SSRManifest } from '../types/SSRManifest.js';
@@ -135,10 +134,9 @@ export const frameworkVitePlugin = (config: Config, pluginConfig: {
             if (pluginConfig.target === 'client' && viteCommand === 'build') {
                 if (fs.existsSync(pluginConfig.srcPublicFullPath)) {
                     try {
-                        await copyFiles(
-                            [pluginConfig.srcPublicFullPath + '/**/*'],
-                            pluginConfig.outPublicFullPath,
-                        );
+                        fs.copySync(pluginConfig.srcPublicFullPath, pluginConfig.outPublicFullPath, {
+                            overwrite: false,
+                        });
                     } catch (err) {
                         console.error('[flue3] filed to copy public dir', err);
                     }

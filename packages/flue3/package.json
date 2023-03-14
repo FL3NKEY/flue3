@@ -24,7 +24,6 @@
     "dependencies": {
         "@vitejs/plugin-vue": "3.2.0",
         "@vue/devtools-api": "6.4.5",
-        "copyfiles": "2.4.1",
         "deepmerge": "4.2.2",
         "esbuild": "0.15.15",
         "esbuild-plugin-alias": "0.2.1",
@@ -43,7 +42,6 @@
         "vue": "3.2.45"
     },
     "devDependencies": {
-        "@types/copyfiles": "2.4.1",
         "@types/fs-extra": "11.0.1",
         "@types/http-proxy": "1.17.9",
         "@types/mustache": "4.2.2",
