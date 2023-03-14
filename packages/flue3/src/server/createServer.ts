@@ -60,7 +60,7 @@ export const createServer = async ({
         // eslint-disable-next-line guard-for-in,no-restricted-syntax
         for (const key in proxies) {
             const proxyOptions = proxies[key];
-            app.use(path.join(basePath, key), createProxyHandler(proxyOptions));
+            app.use(key, createProxyHandler(proxyOptions));
         }
     }
 
