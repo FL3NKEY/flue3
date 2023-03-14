@@ -6,7 +6,7 @@
     "scripts": {
         "build": "lerna run build",
         "version": "lerna version --no-push --no-commit-hooks --no-git-tag-version",
-        "publish": "lerna exec npm publish",
+        "publish": "yarn run build && lerna exec npm publish",
         "docs:dev": "vitepress dev docs",
         "docs:build": "vitepress build docs",
         "docs:preview": "vitepress preview docs"
