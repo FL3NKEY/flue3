@@ -1,5 +1,6 @@
 import { DeepPartial } from './DeepPartial.js';
 import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
+import { Plugin } from 'vite';
 
 interface ServerMiddlewareRecord {
     path: string;
@@ -29,6 +30,9 @@ export interface Config {
         plugins: string[];
     };
     appConfig: Record<string, any>;
+    vite: {
+        plugins: Plugin[];
+    };
 }
 
 export type ConfigDraft = DeepPartial<Config>;

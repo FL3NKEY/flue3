@@ -23,4 +23,7 @@ export const defaultConfig: Config = {
         plugins: [],
     },
     appConfig: {},
+    vite: {
+        plugins: [],
+    },
 };
