@@ -9,6 +9,8 @@ import {
 } from './htmlTemplateImplements.js';
 import { Config } from '../types/Config.js';
 import mustache from 'mustache';
+import { loadEnv } from 'vite';
+import process from 'process';
 
 export const resolveHtmlTemplatePath = (ssr: boolean) => {
     return path.resolve(TEMPLATES_PATH, ssr ? 'index.ssr.html' : 'index.spa.html');
@@ -41,6 +43,8 @@ export const resolveHtmlTemplate = ({
     loadingTemplateFilename: string | false;
     headTemplateFilename: string | false;
 }) => {
+    const env = loadEnv(process.env.NODE_ENV || 'production', WORKDIR, 'APP_');
+
     let template = fs.readFileSync(
         resolveHtmlTemplatePath(ssr),
         'utf-8',
@@ -73,5 +77,10 @@ export const resolveHtmlTemplate = ({
 
     return mustache.render(template, {
         appConfig,
+        import: {
+            meta: {
+                env,
+            },
+        },
     });
 };
