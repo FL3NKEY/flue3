@@ -36,6 +36,7 @@ export const resolveUserConfig = async (): Promise<ConfigDraft> => {
     const env = loadEnv(process.env.NODE_ENV || 'production', WORKDIR, 'APP_');
 
     const esResult = await esBuild({
+        external: ['esbuild'],
         absWorkingDir: WORKDIR,
         entryPoints: [foundedUserConfigFilePath],
         write: false,
