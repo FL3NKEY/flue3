@@ -1,1 +1,0 @@
-import{_ as s,c as n,o as a,a as l}from"./app.df5f6e1b.js";const A=JSON.parse('{"title":"Входные точки приложения","description":"","frontmatter":{},"headers":[],"relativePath":"guide/entrypoint.md"}'),p={name:"guide/entrypoint.md"},o=l("",9),e=[o];function t(c,r,y,D,i,F){return a(),n("div",null,e)}const d=s(p,[["render",t]]);export{A as __pageData,d as default};

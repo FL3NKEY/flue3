@@ -1,0 +1,1 @@
+import{_ as s,o as a,c as n,a as l}from"./app.89fdc23f.js";const i=JSON.parse('{"title":"Работа со стейтом","description":"","frontmatter":{},"headers":[],"relativePath":"guide/state.md"}'),p={name:"guide/state.md"},o=l("",5),e=[o];function t(c,r,D,y,F,A){return a(),n("div",null,e)}const u=s(p,[["render",t]]);export{i as __pageData,u as default};

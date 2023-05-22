@@ -1,0 +1,1 @@
+import{_ as s,o as n,c as a,a as l}from"./app.89fdc23f.js";const i=JSON.parse('{"title":"Работа с cookie","description":"","frontmatter":{},"headers":[],"relativePath":"guide/cookie.md"}'),o={name:"guide/cookie.md"},p=l("",9),e=[p];function t(c,r,F,D,y,C){return n(),a("div",null,e)}const u=s(o,[["render",t]]);export{i as __pageData,u as default};

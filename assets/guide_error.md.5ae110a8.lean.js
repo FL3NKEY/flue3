@@ -1,0 +1,1 @@
+import{_ as s,o as n,c as a,a as l}from"./app.89fdc23f.js";const i=JSON.parse('{"title":"Обработка ошибок","description":"","frontmatter":{},"headers":[],"relativePath":"guide/error.md"}'),p={name:"guide/error.md"},o=l("",11),e=[o];function t(c,r,D,y,F,C){return n(),a("div",null,e)}const d=s(p,[["render",t]]);export{i as __pageData,d as default};

@@ -1,1 +1,0 @@
-import{_ as s,c as n,o as a,a as l}from"./app.df5f6e1b.js";const i=JSON.parse('{"title":"Обработка ошибок","description":"","frontmatter":{},"headers":[],"relativePath":"guide/error.md"}'),p={name:"guide/error.md"},o=l("",11),e=[o];function t(c,r,D,y,F,C){return a(),n("div",null,e)}const d=s(p,[["render",t]]);export{i as __pageData,d as default};
