@@ -12,7 +12,7 @@ export const createPlugins = async (plugins: CreateAppOptions['plugins'], appCon
         // eslint-disable-next-line guard-for-in,no-restricted-syntax
         for (const plugin of plugins) {
             try {
-                await plugin(pluginContext);
+                await appContext.callWithContext(() => plugin(pluginContext));
             } catch (err) {
                 console.error('[flue3] fail plugin initialized', err);
             }

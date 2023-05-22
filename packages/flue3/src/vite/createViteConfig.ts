@@ -106,9 +106,11 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             noExternal: [...ssrNoExternalPattern],
         },
         optimizeDeps: {
+            include: ['vue'],
             exclude: [
                 ...(config.excludeDeps || []),
                 'flue3',
+                '@flue3/head',
                 '@flue3/router',
             ],
         },
@@ -116,8 +118,14 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
             alias: {
                 '@': srcFullPath,
                 '~': WORKDIR,
+                ...(config.mode === 'development' ? {
+                    'vue/server-renderer': 'vue/server-renderer',
+                    'vue/compiler-sfc': 'vue/compiler-sfc',
+                    vue: 'vue/dist/vue.runtime.esm-bundler.js',
+                } : {}),
                 ...config.aliases,
             },
+            dedupe: ['vue'],
         },
         define: {
             FLUE3_APP_ID: JSON.stringify(config.appId),

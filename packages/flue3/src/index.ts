@@ -20,4 +20,6 @@ export { useAppConfig } from './app/composables/useAppConfig.js';
 export { default as AppRoot } from './app/components/AppRoot.js';
 export { default as ClientOnly } from './app/components/ClientOnly.js';
 
-export { AppContext } from './types/AppContext.js';
+export type { AppContext } from './types/AppContext.js';
+export type { AppState } from './types/AppState.js';
+export type { AppConfig } from './types/AppConfig.js';

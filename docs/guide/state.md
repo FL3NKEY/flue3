@@ -1,22 +1,24 @@
 # Работа со стейтом
 
-Так как наш код в режиме SSR выполняется на клиенте и на сервере и к примеру взяв какие то данные на сервере, мы должны их как то передать клиенту (браузеру). Для этого мы можем воспользоваться свойством [state](/guide/config#state) и методом [writeState](/guide/config#writestate) из контекста приложения.
+Так как наш код в режиме SSR выполняется на клиенте и на сервере и к примеру взяв какие то данные на сервере, мы должны их как то передать клиенту (браузеру). Для этого мы можем воспользоваться свойством [useState](/api/composables#usestate).
 
 ```typescript
-import {definePlugin} from 'flue3';
+import {definePlugin, useState} from 'flue3';
 
 export const createExamplePlugin = definePlugin(({ appContext }) => {
-    // выполним writeState тольо на сервере
+    const paramFromServer = useState('paramFromServer');
+    
+    // выполним тольо на сервере
     if(import.meta.env.SSR) {
-        appContext.writeState('paramFromServer', 'some value');
+        paramFromServer.value = 'some value';
     }
 
-    // 'some value'
-    console.log(appContext.state.paramFromServer);
+    // этот console.log выполнится и на сервере и на клиенте и отобразит 'some value'
+    console.log(paramFromServer.value);
 });
 ```
 
-После для получения стейта в `setup` функциях, мы можем воспользоваться [useState](/api/composables#usestate).
+После для получения стейта в `setup` функциях, мы можем воспользоваться так же [useState](/api/composables#usestate).
 
 ```vue
 <script lang="ts" setup>

@@ -3,7 +3,7 @@ import { AppContext } from '../../types/AppContext.js';
 import { AppErrorState, AppError } from '../../types/AppError.js';
 import { parseError } from '../../utils/error.js';
 
-const errorStateKey = '$errorState';
+const errorStateKey = '_errorState';
 
 export const implementAppError = (appContext: AppContext) => {
     let initialErrorState: AppErrorState = {
@@ -15,7 +15,8 @@ export const implementAppError = (appContext: AppContext) => {
 
     if (appContext.isClient && appContext.state.hasOwnProperty(errorStateKey)) {
         initialErrorState = appContext.state[errorStateKey];
-        appContext.deleteState(errorStateKey);
+        // eslint-disable-next-line no-param-reassign
+        delete appContext.state[errorStateKey];
     }
 
     const errorState = reactive<AppErrorState>(initialErrorState);
@@ -36,7 +37,8 @@ export const implementAppError = (appContext: AppContext) => {
                 statusText: message,
             });
 
-            appContext.writeState(errorStateKey, markRaw(errorState));
+            // eslint-disable-next-line no-param-reassign
+            appContext.state[errorStateKey] = markRaw(errorState);
         }
     };
 

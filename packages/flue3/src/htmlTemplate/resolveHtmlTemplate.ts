@@ -7,10 +7,10 @@ import {
     htmlTemplateImplementAppId,
     htmlTemplateImplementEntrypoint,
 } from './htmlTemplateImplements.js';
-import { Config } from '../types/Config.js';
 import mustache from 'mustache';
 import { loadEnv } from 'vite';
 import process from 'process';
+import { AppConfig } from '../types/AppConfig.js';
 
 export const resolveHtmlTemplatePath = (ssr: boolean) => {
     return path.resolve(TEMPLATES_PATH, ssr ? 'index.ssr.html' : 'index.spa.html');
@@ -35,7 +35,7 @@ export const resolveHtmlTemplate = ({
     loadingTemplateFilename,
     headTemplateFilename,
 }: {
-    appConfig: Config['appConfig'];
+    appConfig: AppConfig;
     ssr: boolean;
     appId: string;
     srcPath: string;

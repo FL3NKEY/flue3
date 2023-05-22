@@ -1,6 +1,6 @@
 import { Component } from 'vue';
 import { RouteRecordRaw, RouterScrollBehavior } from 'vue-router';
-import { AppContext } from 'flue3/lib/types/AppContext.js';
+import { AppContext } from 'flue3';
 import { AppMiddleware } from 'flue3/src/types/AppMiddleware.js';
 
 export type LayoutComponent = (() => Promise<Component | { default: Component }>) | Component;

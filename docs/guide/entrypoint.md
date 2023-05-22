@@ -10,18 +10,20 @@
 
 `src/entryClient.ts`
 ```typescript
-import {defineEntry} from 'flue3';
+import {defineEntry, useAppContext} from 'flue3';
 
-export default defineEntry((appContext) => {
-    console.log('hello from browser!');
+export default defineEntry(() => {
+    const appContext = useAppContext();
+    console.log('hello from browser!', appContext);
 });
 ```
 
 `src/entryServer.ts`
 ```typescript
-import {defineEntry} from 'flue3';
+import {defineEntry, useAppContext} from 'flue3';
 
-export default defineEntry((appContext) => {
-    console.log('hello from server!');
+export default defineEntry(() => {
+    const appContext = useAppContext();
+    console.log('hello from server!', appContext);
 });
 ```

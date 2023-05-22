@@ -1,14 +1,17 @@
 # Перенаправление навигации
 
-Если вам нужно сделать редирект на другой путь/сайт например в `middleware`, то можно воспользоваться методом [redirect](/api/context#rediect) из контекста приложения.
+Если вам нужно сделать редирект на другой путь/сайт например в `middleware`, то можно воспользоваться функцией [useRedirect](/api/composables#useredirect).
 
 `src/middleware/isAuthMiddleware.ts`;
 ```typescript
-import {defineMiddleware} from 'flue3';
+import {defineMiddleware, useRedirect, useState} from 'flue3';
 
-export const isAuthMiddleware = defineMiddleware((appContext) => {
-    if(!appContext.state.user) {
-        appContext.redirect('/auth');
+export const isAuthMiddleware = defineMiddleware(() => {
+    const user = useState('user');
+    const {redirect} = useRedirect();
+    
+    if(!user.value) {
+        redirect('/auth');
     }
 });
 ```

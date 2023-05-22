@@ -4,7 +4,7 @@ import {
     createMemoryHistory,
     RouteLocationNormalizedLoaded,
 } from 'vue-router';
-import { definePlugin } from 'flue3';
+import { definePlugin, AppContext } from 'flue3';
 import { pluginRoutes } from './routes/pluginRoutes.js';
 import {
     reactive,
@@ -19,7 +19,6 @@ import {
     RouterPluginOptions,
 } from './types.js';
 import { proceedUncertainModuleFunc } from 'flue3/lib/utils/proceedUncertainModuleFunc.js';
-import { AppContext } from 'flue3/lib/types/AppContext.js';
 import { parseRoutesRecordToRaw } from './utils.js';
 
 export const createRouterPlugin = definePlugin(async (
@@ -44,7 +43,7 @@ export const createRouterPlugin = definePlugin(async (
     });
 
     inject('router', router);
-    inject('layouts', layouts);
+    inject('layouts', layouts || {});
     inject('clientRedirect', router.push, true);
 
     const reactiveRoute: any = {};
@@ -88,3 +87,4 @@ export * from 'vue-router';
 export { defineRoutes } from './defines/defineRoutes.js';
 export { defineLayouts } from './defines/defineLayouts.js';
 export { default as RootView } from './components/RootView.js';
+export { default as ChildView } from './components/ChildView.js';

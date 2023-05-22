@@ -1,46 +1,23 @@
-import {
-    ref,
-    watch,
-    Ref,
-    UnwrapRef,
-    onBeforeUnmount,
-} from 'vue';
+import { Ref, toRef } from 'vue';
 import { useAppContext } from './useAppContext.js';
+import { AppState } from '../../types/AppState.js';
 
-export const useState = <T>(key: string, initialValue?: () => T): Ref<T> => {
+export const useState = <KeyT extends keyof AppState>(
+    key: KeyT,
+    initialValue?: () => AppState[KeyT],
+): Ref<AppState[KeyT]> => {
     const stateKey = key;
     const appContext = useAppContext();
 
-    let initialRefValue: T;
+    let initialRefValue: AppState[KeyT];
 
-    if (appContext.state.hasOwnProperty(stateKey)) {
-        initialRefValue = appContext.state[stateKey];
-    } else if (initialValue) {
+    if (!appContext.state.hasOwnProperty(stateKey) && initialValue) {
         initialRefValue = initialValue();
-        appContext.writeState(stateKey, initialRefValue);
+        appContext.state[stateKey] = initialRefValue;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const refValue = ref<T>(initialRefValue!);
+    const refValue = toRef(appContext.state, stateKey);
 
-    const unregisterStateHook = appContext.hooks.hook(
-        'state:changed',
-        (key, data: UnwrapRef<T>) => {
-            if (key === stateKey && refValue.value !== data) {
-                refValue.value = data;
-            }
-        },
-    );
-
-    onBeforeUnmount(() => {
-        unregisterStateHook();
-    });
-
-    watch(refValue, (newValue) => {
-        appContext.writeState(stateKey, newValue);
-    }, {
-        deep: true,
-    });
-
-    return refValue as Ref<T>;
+    return refValue as Ref<AppState[KeyT]>;
 };

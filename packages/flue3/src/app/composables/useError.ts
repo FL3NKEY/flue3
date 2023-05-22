@@ -8,11 +8,11 @@ export const useError = () => {
         errorState,
     } = useAppContext();
 
-    const { error: showError } = useAppContextInternal();
+    const { appContext } = useAppContextInternal();
 
     return {
         error,
-        showError,
+        showError: appContext.error,
         clearError,
         errorState,
     };

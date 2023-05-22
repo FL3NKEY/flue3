@@ -17,7 +17,7 @@ import {
     AsyncDataState,
 } from '../../types/AsyncData.js';
 
-export const getAsyncDataStateKey = (key: string) => `$asyncData.${key}`;
+export const getAsyncDataStateKey = (key: string) => `_asyncData.${key}`;
 
 export function useAsyncData <T>(
     key: string,
@@ -51,7 +51,7 @@ export function useAsyncData <T>(
     if (appContext.isClient) {
         if (!isLazy && appContext.state.hasOwnProperty(asyncDataStateKey)) {
             initialState = appContext.state[asyncDataStateKey];
-            appContext.deleteState(asyncDataStateKey);
+            delete appContext.state[asyncDataStateKey];
         } else if (initialValue) {
             initialState.data = initialValue();
         }
@@ -83,10 +83,10 @@ export function useAsyncData <T>(
 
             if (appContext.isServer) {
                 asyncDataState.serverPrefetched = true;
-                appContext.writeState(asyncDataStateKey, toRaw({
+                appContext.state[asyncDataStateKey] = toRaw({
                     ...asyncDataState,
                     error: serializeError(asyncDataState.error),
-                }));
+                });
             }
         }
     };
@@ -95,7 +95,7 @@ export function useAsyncData <T>(
 
     if (appContext.isServer) {
         watch(asyncDataState, (newState) => {
-            appContext.writeState(asyncDataStateKey, {
+            appContext.state[asyncDataStateKey] = toRaw({
                 ...newState,
                 error: serializeError(newState.error),
             });

@@ -3,18 +3,22 @@ import { useAppContext as useAppContextInternal } from '../context/appContextPro
 import { createError, createRedirectError } from '../../utils/error.js';
 
 export const useAppContext = (): AppContext => {
-    const appContext = useAppContextInternal();
+    const { appContext, isVueInstance } = useAppContextInternal();
 
     const redirect: AppContext['redirect'] = (location, status) => {
         appContext.redirect(location, status);
-        if (appContext.isServer) {
+
+        if (isVueInstance && appContext.isServer) {
             throw createRedirectError(status);
         }
     };
 
     const error: AppContext['error'] = (options) => {
         appContext.error(options);
-        throw createError(options);
+
+        if (isVueInstance) {
+            throw createError(options);
+        }
     };
 
     return {

@@ -2,34 +2,48 @@
 
 На сервере не доступен `document.cookie`, поэтому в нём нужен другой подход (работа с HTTP заголовками). **flue3** предоставляет свою обёртку для работы с куки, которая обратаывает оба случая (клиентский и серверный).
 
-## В контексте приложения
-
 Контекст приложения имеет методы [setCookie](/api/context#setcookie), [getCookie](/api/context#getcookie), [hasCookie](/api/context#hascookie) и [removeCookie](/api/context#removecookie) для работы с куки.
 
 `src/plugins/examplePlugin.ts`;
 ```typescript
-import {definePlugin} from 'flue3';
+import {definePlugin, useAppContext} from 'flue3';
 
-export const createExamplePlugin = definePlugin(({ appContext }) => {
+export const createExamplePlugin = definePlugin(() => {
+    const {hasCookie, getCookie, setCookie, removeCookie} = useAppContext();
+    
     // false
-    console.log(appContext.hasCookie('theme'));
+    console.log(hasCookie('theme'));
     // undefined
-    console.log(appContext.getCookie('theme'));
+    console.log(getCookie('theme'));
 
-    appContext.setCookie('theme', 'dark');
+    setCookie('theme', 'dark');
 
     // true
-    console.log(appContext.hasCookie('theme'));
+    console.log(hasCookie('theme'));
     // 'dark'
-    console.log(appContext.getCookie('theme'));
+    console.log(getCookie('theme'));
     
-    appContext.removeCookie('theme');
+    removeCookie('theme');
 });
 ```
 
-## В setup функциях
+Так же можно воспользоваться функцией [useCookie](/api/composables#usecookie), который создаёт двухсторонний биндинг значения с куки-файлом.
 
-В `setup` функциях можно воспользоваться функцией [useCookie](/api/composables#usecookie), который создаёт двухсторонний биндинг значения с куки-файлом.
+`src/plugins/examplePlugin.ts`;
+```typescript
+import {definePlugin, useCookie} from 'flue3';
+
+export const createExamplePlugin = definePlugin(() => {
+    const theme = useCookie('theme', () => 'light');
+    const isDark = theme.value === 'dark';
+    
+    if(isDark) {
+        theme.value = 'light';
+    } else {
+        theme.value = 'dark';
+    }
+});
+```
 
 ```vue
 <template>
@@ -43,9 +57,9 @@ export const createExamplePlugin = definePlugin(({ appContext }) => {
 import {computed} from 'vue';
 import {useCookie} from 'flue3';
 
-const theme = useCookie('theme', () => 'light');
+const theme = useCookie('theme');
 const setTheme = (value: string) => {
-  theme.value = value; // так же изменит куки у пользователя
+  theme.value = value;
 };
 
 const classes = computed(() => {

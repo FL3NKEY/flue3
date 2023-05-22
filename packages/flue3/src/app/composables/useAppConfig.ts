@@ -1,4 +1,4 @@
-import { useAppContext } from '../context/appContextProvider.js';
+import { useAppContext } from './useAppContext.js';
 
 export const useAppConfig = () => {
     const appContext = useAppContext();

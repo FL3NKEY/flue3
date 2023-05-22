@@ -56,11 +56,13 @@ import {RootView} from '@flue3/router';
 `src/plugins/examplePlugin.ts`
 ```typescript
 import {definePlugin} from 'flue3';
+import {useRoute} from '@flue3/router';
 
-export const createExamplePlugin = definePlugin(({ appContext }) => {
+export const createExamplePlugin = definePlugin(() => {
+    const route = useRoute();
     let isDemo = false;
     
-    if(appContext.route.query.demo) {
+    if(route.query.demo) {
         isDemo = true;
     }
     
@@ -101,21 +103,25 @@ createRouterPlugin({
 Для удобство типизации, если вы описываете роуты в отдельном файле, можно воспользоваться функцией `defineRoutes`.
 
 `src/routes.ts`
-```typescript
-import {defineRoutes} from '@flue3/router';
 
-export const routes = defineRoutes(async (appContext) => {
+```typescript
+import { useAppContext } from 'flue3';
+import { defineRoutes } from '@flue3/router';
+
+export const routes = defineRoutes(async () => {
+    const { isMobile } = useAppContext();
+
     return [
         {
             path: '/',
             name: 'home',
-            component: appContext.isMobile
+            component: isMobile
                 ? () => import('@/pages/mobile/Home.vue')
                 : () => import('@/pages/desktop/Home.vue')
         }, {
             path: '/auth',
             name: 'auth',
-            component: appContext.isMobile
+            component: isMobile
                 ? () => import('@/pages/mobile/Auth.vue')
                 : () => import('@/pages/desktop/Auth.vue')
         }
@@ -173,15 +179,18 @@ createRouterPlugin({
 Как и `routes`, `layouts` может быть асинхронной функцией и так же имеет `defineLayouts` для удобства типизации.
 
 `src/layouts.ts`
-```typescript
-import {defineLayouts} from '@flue3/router';
 
-export const routes = defineLayouts(async (appContext) => {
+```typescript
+import { useAppContext } from 'flue3';
+import { defineLayouts } from '@flue3/router';
+
+export const routes = defineLayouts(async () => {
+    const { isMobile } = useAppContext();
     return {
-        default: appContext.isMobile
+        default: isMobile
             ? () => import('@/layouts/mobile/Default.vue')
             : () => import('@/layouts/desktop/Default.vue'),
-        auth: appContext.isMobile
+        auth: isMobile
             ? () => import('@/layouts/mobile/Auth.vue')
             : () => import('@/layouts/desktop/Auth.vue')
     };
@@ -203,23 +212,30 @@ createRouterPlugin({
 Так же для каждого роута можно указать `middleware`, которые будут вызываться до его рендеринга.
 
 `src/middleware/noAuth.ts`
-```typescript
-import {defineMiddleware} from 'flue3';
 
-export const noAuthMiddleware = defineMiddleware((appContext) => {
-    if(appContext.state.user) {
-        appContext.redirect('/');
+```typescript
+import { defineMiddleware, useRedirect, useState } from 'flue3';
+
+export const noAuthMiddleware = defineMiddleware(() => {
+    const user = useState('user');
+    const { redirect } = useRedirect();
+
+    if (user.value) {
+        redirect('/');
     }
 });
 ```
 
 `src/middleware/onlyAuth.ts`
 ```typescript
-import {defineMiddleware} from 'flue3';
+import {defineMiddleware, useState, useRedirect} from 'flue3';
 
-export const noAuthMiddleware = defineMiddleware((appContext) => {
-    if(!appContext.state.user) {
-        appContext.redirect('/auth');
+export const noAuthMiddleware = defineMiddleware(() => {
+    const user = useState('user');
+    const { redirect } = useRedirect();
+    
+    if(user.value) {
+        redirect('/auth');
     }
 });
 ```
@@ -251,7 +267,64 @@ createRouterPlugin({
 
 ## Компоненты
 
-Экспортируемые компоненты из `@flue3/router` соотвествуют компонентам **vue-router** пакета, то есть тут так же имеется `RouterView`, `RouterLink` и другое.
+### RootView
+
+Корневой компонент роутинга.
+
+Принимает в себя аттрибуты:
+
+- `routeKey` - `key` свойство над `RouterView` компонентом.
+- `transition` - js объект или css класс, описивающий логику переходов между страницами.
+
+```vue
+<template>
+    <AppRoot>
+        <RootView :routeKey="$route.path"
+                  :transition="{ name: 'my-transition' } /* или просто 'my-transition' */" />
+    </AppRoot>
+</template>
+
+<script lang="ts" setup>
+import { AppRoot } from 'flue3';
+import { RootView } from '@flue3/router';
+</script>
+```
+
+### ChildView
+
+Компонент для вложенных страниц. API компонента по аналогии с `RootView`.
+
+```vue
+<template>
+    <div>
+        <ChildView :routeKey="$route.path"
+                   transition="my-transition" />
+    </div>
+</template>
+
+<script lang="ts" setup>
+import { AppRoot } from 'flue3';
+import { ChildView } from '@flue3/router';
+</script>
+```
+
+### ChildView
+
+```vue
+<template>
+    <div>
+        <RouterLink to="/">
+            go to home
+        </RouterLink>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import {RouterLink} from '@flue3/router';
+</script>
+```
+
+### RouterLink
 
 ```vue
 <template>

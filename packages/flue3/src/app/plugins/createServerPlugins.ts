@@ -8,7 +8,7 @@ export const createServerPlugins = async (appContext: AppContext) => {
         try {
             const pluginModule = await plugin();
             const handlerFn = (pluginModule.default ?? pluginModule) as ServerPlugin;
-            await handlerFn(appContext);
+            await appContext.callWithContext(() => handlerFn(appContext));
         } catch (err) {
             console.error('[flue3] fail server plugin initialized', err);
         }

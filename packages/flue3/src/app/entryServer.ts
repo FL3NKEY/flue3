@@ -48,7 +48,7 @@ export const createUniversalEntry = (
             await context.appContext.hooks.callHook('app:created');
             if (context.appContext.isRedirected()) return undefined;
 
-            await entryServer(context.appContext);
+            await context.appContext.callWithContext(() => entryServer(context.appContext));
             if (context.appContext.isRedirected()) return undefined;
 
             await context.appContext.hooks.callHook('render:before', renderPartials);

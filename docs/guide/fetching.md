@@ -4,15 +4,17 @@
 
 ## При инициализации
 
-При инициализации приложения, вы можете запросить некоторые данные и сохранить их в стейт с последующем использованием в компонентах.
+При инициализации приложения, вы можете запросить некоторые данные и сохранить их в стейт с помощью [useState](/api/composables#usestate) с последующем использованием в компонентах.
 
 `src/app.ts`
 ```typescript
-import {createApp} from 'flue3';
+import {createApp, useState} from 'flue3';
 
 import App from '@/App.vue';
 
-export default createApp(App, {}, async (appContext) => {
+export default createApp(App, {}, async () => {
+    const user = useState('user');
+    
     /*
     Так как эта функция вызывается на сервере и клиенте,
     то если мы вызоваем эту функция снова на клиенте,
@@ -20,14 +22,14 @@ export default createApp(App, {}, async (appContext) => {
     то нет смысла запрашивать данные второй раз,
     так как на клиенте state.user уже будет в себе содержать данные.
      */
-    if(!appContext.state.user) {
+    if(!user.value) {
         try {
             /* запрашивает данные с api */
-            const user = await fetch('/api/user')
+            const userRes = await fetch('/api/user')
                 .then((response) => response.json());
 
             /* сохраняем данные в глобальном стейте */
-            appContext.writeState('user', user);
+            user.value = userRes;
         } catch (err) {
            /*
            Здесь мы можем вызвать appContext.error(...),
@@ -39,7 +41,7 @@ export default createApp(App, {}, async (appContext) => {
 });
 ```
 
-После в `setup` функциях, мы можем воспользоваться [useState](/api/composables#usestate) для получениях данных из глобального стейте.
+После в `setup` функциях, мы можем воспользоваться так же [useState](/api/composables#usestate) для получениях данных из глобального стейте.
 
 `src/App.vue`
 ```vue

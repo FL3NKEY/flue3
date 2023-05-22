@@ -1,4 +1,4 @@
-import { AppContext } from 'flue3/lib/types/AppContext.js';
+import { AppContext } from 'flue3';
 import { AppMiddleware } from 'flue3/src/types/AppMiddleware.js';
 
 export const createRoutesMiddleware = (appContext: AppContext) => {
@@ -16,7 +16,7 @@ export const createRoutesMiddleware = (appContext: AppContext) => {
                 break;
             }
 
-            await middleware(appContext);
+            await appContext.callWithContext(() => middleware(appContext));
         }
 
         next();

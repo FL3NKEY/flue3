@@ -1,4 +1,4 @@
-import { AppContext } from 'flue3/lib/types/AppContext.js';
+import { AppContext } from 'flue3';
 import { START_LOCATION } from 'vue-router';
 
 export const createErrorStateMiddleware = (appContext: AppContext) => {

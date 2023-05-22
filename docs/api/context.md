@@ -32,21 +32,9 @@ title: 'Контекст'
 
 ## state
 
-Тип: `readonly object`
+Тип: `readonly reactive object`
 
 Расшаренный стейт приложения, который синхронизируется с клиентской и серверной частью при гидрации.
-
-## writeState
-
-Тип: ` key: string, data: any) => void`
-
-Метод для записи значения в `state`.
-
-## deleteState
-
-Тип: `(key: string) => boolean`
-
-Метод для удаления записи из `state`.
 
 ## req
 

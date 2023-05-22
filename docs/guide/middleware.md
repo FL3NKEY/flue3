@@ -6,13 +6,16 @@
 
 `src/middleware/isAuthMiddleware.ts`;
 ```typescript
-import {defineMiddleware} from 'flue3';
+import {defineMiddleware, useState, useError} from 'flue3';
 
-export const isAuthMiddleware = defineMiddleware((appContext) => {
-    if(!appContext.state.user) {
-        appContext.error({
+export const isAuthMiddleware = defineMiddleware(() => {
+    const user = useState('user');
+    const {error} = useError();
+    
+    if(!user.value) {
+        error({
             status: 403,
-            message: 'Authorized required',
+            message: 'Authorization required',
         });
     }
 });

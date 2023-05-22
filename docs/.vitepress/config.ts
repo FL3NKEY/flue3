@@ -116,10 +116,6 @@ export default defineConfig({
                                     link: '/guide/routing'
                                 },
                                 {
-                                    text: 'Глобальное хранилище',
-                                    link: '/guide/store'
-                                },
-                                {
                                     text: 'SEO и Meta-теги',
                                     link: '/guide/seo'
                                 },

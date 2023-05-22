@@ -1,4 +1,4 @@
-import { App } from 'vue';
+import { App, reactive } from 'vue';
 import { AppContext } from '../../types/AppContext.js';
 import { AppErrorState } from '../../types/AppError.js';
 import { clientExternalRedirect } from '../../utils/clientExternalRedirect.js';
@@ -13,12 +13,7 @@ export const createAppContext = (): AppContext => {
         vueApp: {} as App,
         isClient: !import.meta.env.SSR,
         isServer: import.meta.env.SSR,
-        state: {},
-        writeState: () => console.error('[flue3] writeState not defined yet'),
-        deleteState: () => {
-            console.error('[flue3] deleteState not defined yet');
-            return false;
-        },
+        state: reactive({}),
         inject: () => () => console.error('[flue3] inject is not defined yet'),
         writeResponse: () => console.error('[flue3] Do not call writeResponse in browser or is not defined yet'),
         isRedirected: () => false,
@@ -39,5 +34,8 @@ export const createAppContext = (): AppContext => {
         },
         removeCookie: () => console.error('[flue3] removeCookie not defined yet'),
         hooks: {} as Hookable<AppHooks>,
+        callWithContext: async () => {
+            console.error('[flue3] callWithAppContext not defined yet');
+        },
     };
 };

@@ -27,7 +27,7 @@ export const createUniversalEntry = async (
     await createApp(context);
     await context.appContext.hooks.callHook('app:created');
 
-    await entryClient(context.appContext);
+    await context.appContext.callWithContext(() => entryClient(context.appContext));
 
     if (import.meta.env.DEV) {
         createDevtools(context);

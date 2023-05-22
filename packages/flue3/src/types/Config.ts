@@ -1,6 +1,7 @@
 import { DeepPartial } from './DeepPartial.js';
 import type { ServerOptions as HTTPProxyOptions } from 'http-proxy';
 import { Plugin } from 'vite';
+import { AppConfig } from './AppConfig.js';
 
 interface ServerMiddlewareRecord {
     path: string;
@@ -29,7 +30,7 @@ export interface Config {
         middleware: ServerMiddlewareRecord[];
         plugins: string[];
     };
-    appConfig: Record<string, any>;
+    appConfig: AppConfig;
     vite: {
         plugins: Plugin[];
     };

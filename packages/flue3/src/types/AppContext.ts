@@ -6,17 +6,16 @@ import { AppResponse, AppWriteResponse } from './AppResponse.js';
 import { Cookie } from './Cookie.js';
 import { Hookable } from 'hookable';
 import { AppHooks } from './AppHooks.js';
-import { Config } from './Config.js';
+import { AppState } from './AppState.js';
+import { AppConfig } from './AppConfig.js';
 
 export interface AppContext extends Record<string, any> {
     basePath: string;
-    config: Config['appConfig'];
+    config: AppConfig;
     vueApp: App;
     isClient: boolean;
     isServer: boolean;
-    state: Record<any, any>;
-    writeState: (key: string, data: any) => void;
-    deleteState: (key: string) => boolean;
+    state: AppState;
     req?: NodeIncomingMessage;
     res?: NodeServerResponse;
     inject: AppInject;
@@ -33,4 +32,5 @@ export interface AppContext extends Record<string, any> {
     hasCookie: Cookie['has'];
     removeCookie: Cookie['remove'];
     hooks: Hookable<AppHooks>;
+    callWithContext: (fn: () => any) => Promise<any>;
 }
