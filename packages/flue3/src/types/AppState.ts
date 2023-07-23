@@ -1,1 +1,3 @@
-export type AppState = Record<string, any>;
+export interface AppState {
+    [p: string]: any;
+}
