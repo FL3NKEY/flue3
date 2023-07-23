@@ -2,14 +2,16 @@ import { Ref, toRef } from 'vue';
 import { useAppContext } from './useAppContext.js';
 import { AppState } from '../../types/AppState.js';
 
-export const useState = <KeyT extends keyof AppState>(
+type UseState = <KeyT extends keyof AppState>(
     key: KeyT,
     initialValue?: () => AppState[KeyT],
-): Ref<AppState[KeyT]> => {
+) => Ref<AppState[KeyT]>;
+
+export const useState: UseState = (key, initialValue) => {
     const stateKey = key;
     const appContext = useAppContext();
 
-    let initialRefValue: AppState[KeyT];
+    let initialRefValue: AppState[typeof key];
 
     if (!appContext.state.hasOwnProperty(stateKey) && initialValue) {
         initialRefValue = initialValue();
@@ -19,5 +21,5 @@ export const useState = <KeyT extends keyof AppState>(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const refValue = toRef(appContext.state, stateKey);
 
-    return refValue as Ref<AppState[KeyT]>;
+    return refValue;
 };
