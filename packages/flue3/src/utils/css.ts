@@ -32,7 +32,7 @@ export const collectCssTagsFromModules = (
     }
     let result = '';
     styles.forEach((url, id) => {
-        const styleTag = `<link rel="stylesheet" href="${url}" data-vite-dev-id="${id}"></link>`;
+        const styleTag = `<style data-vite-dev-id="${id}">@import "${url}";</style>`;
         result += styleTag;
     });
     return result;
