@@ -32,14 +32,8 @@ export const collectCssTagsFromModules = (
     }
     let result = '';
     styles.forEach((url, id) => {
-        const styleTag = `<link rel="stylesheet" href="${url}" data-vite-css-dev-id="${id}"></link>`;
+        const styleTag = `<link rel="stylesheet" href="${url}" data-vite-dev-id="${id}"></link>`;
         result += styleTag;
     });
     return result;
-};
-
-export const removeCssHotReloaded = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    [...document.querySelectorAll('link[data-vite-css-dev-id]')].forEach((el) => el.remove());
 };

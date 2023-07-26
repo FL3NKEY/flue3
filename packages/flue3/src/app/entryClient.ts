@@ -10,7 +10,6 @@ import { CreateApp } from '../types/CreateApp.js';
 import { implementAppInjector } from './inject/implementAppInjector.js';
 import entryClient from '#_FLUE3_APP_TARGET_ENTRY';
 import { createDevtools } from './devtools/createDevtools.js';
-import { removeCssHotReloaded } from '../utils/css.js';
 
 export const createUniversalEntry = async (
     App: Component,
@@ -31,7 +30,6 @@ export const createUniversalEntry = async (
 
     if (import.meta.env.DEV) {
         createDevtools(context);
-        removeCssHotReloaded();
     }
 
     context.appContext.vueApp.mount(`#${FLUE3_APP_ID}`);

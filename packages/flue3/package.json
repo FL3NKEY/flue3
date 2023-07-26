@@ -1,6 +1,6 @@
 {
     "name": "flue3",
-    "version": "0.2.2-dev.0",
+    "version": "0.2.3-dev.0",
     "description": "flue3 SSR framework based on Vite",
     "author": "FL3NKEY",
     "homepage": "https://github.com/FL3NKEY/flue3",
@@ -22,7 +22,7 @@
         "url": "https://github.com/FL3NKEY/flue3/issues"
     },
     "dependencies": {
-        "@vitejs/plugin-vue": "4.2.2",
+        "@vitejs/plugin-vue": "4.2.3",
         "@vue/devtools-api": "6.4.5",
         "deepmerge": "4.2.2",
         "esbuild": "0.17.18",
@@ -38,8 +38,8 @@
         "sass": "1.62.1",
         "serialize-error": "11.0.0",
         "serve-static": "1.15.0",
-        "vite": "4.3.5",
-        "vue": "3.3.1"
+        "vite": "4.4.7",
+        "vue": "3.3.4"
     },
     "devDependencies": {
         "@types/fs-extra": "11.0.1",
