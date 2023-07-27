@@ -138,6 +138,9 @@ export const createViteConfig = (config: Config, target: 'server' | 'client' = '
         appType: 'custom',
         server: {
             middlewareMode: true,
+            headers: {
+                'Cache-Control': 'no-store',
+            },
         },
     };
 };
